@@ -1,0 +1,56 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <button class="back-btn" (click)="redirect('/landing')">← Back</button>
+
+    <h1 class="auth-title">{{ isLogin ? 'Welcome Back' : 'Create Your Account' }}</h1>
+    <p class="auth-subtitle">
+      {{ isLogin ? 'Login to continue your learning journey' : 'Join Aethera and start exploring knowledge' }}
+    </p>
+
+    <form (ngSubmit)="onSubmit(authForm)" #authForm="ngForm" class="auth-form">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" ngModel required placeholder="you@example.com" />
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" ngModel required placeholder="••••••••" />
+      </div>
+
+      <div *ngIf="!isLogin" class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" name="confirmPassword" ngModel required placeholder="••••••••" />
+      </div>
+
+      <div *ngIf="!isLogin" class="form-group">
+        <label>Display Name</label>
+        <input type="text" name="displayName" ngModel required placeholder="Your nickname" />
+      </div>
+
+      <div class="form-group">
+        <ngx-recaptcha2 #captchaElem [siteKey]="siteKey" name="recaptcha"  required theme="dark">
+        </ngx-recaptcha2>
+      </div>
+      <button type="submit" class="btn primary" [disabled]="authForm.invalid">
+        {{ isLogin ? 'Login' : 'Sign Up' }}
+      </button>
+    </form>
+
+    <div class="divider">
+      <span>or</span>
+    </div>
+
+    <button class="btn google" (click)="signInWithGoogle()">
+      <img src="" alt="Google" />
+      Continue with Google
+    </button>
+
+    <p class="switch">
+      {{ isLogin ? "Don't have an account?" : 'Already have an account?' }}
+      <a (click)="toggleAuthMode()">
+        {{ isLogin ? 'Sign up' : 'Login' }}
+      </a>
+    </p>
+  </div>
+</div>

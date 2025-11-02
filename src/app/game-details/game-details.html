@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Reactor: Detailed View</title>
+    <style>
+        /* --- GLOBAL RESET --- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /*
+         * FIX: Explicitly remove browser focus outlines to prevent white borders
+         * in a dark theme. We use box-shadow on :hover/:focus for visual feedback instead.
+         */
+        button:focus, a:focus {
+            outline: none;
+            /* Optional: Add a custom colored shadow for accessibility */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); /* Semi-transparent blue ring */
+        }
+        
+        /* Ensure specific interactive elements also inherit the focus style */
+        .launch-button:focus, .back-button:focus, .carousel-arrow:focus {
+            outline: none;
+        }
+
+
+        /* --- BASE STYLES --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Slate 900 (Main Background) */
+            color: #f8fafc; /* Near White */
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding: 3rem 2rem;
+            }
+        }
+        
+        h1 { font-size: 2.5rem; font-weight: 800; color: #ec4899; /* Vibrant Pink */ margin-bottom: 0.5rem; }
+        h2 { font-size: 1.75rem; font-weight: 600; color: #3b82f6; /* Bright Blue */ margin-bottom: 1rem; }
+        h3 { font-size: 1.25rem; font-weight: 600; color: #3b82f6; /* Bright Blue */ margin-top: 1.5rem; margin-bottom: 0.75rem; }
+
+        /* --- CARD & LAYOUT --- */
+        .card {
+            background-color: #1e293b; /* Slate 800 (Card Background) */
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid #334155; /* Slate 700 Border */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .main-grid {
+            display: grid;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .main-grid {
+                /* 2 parts content, 1 part sidebar */
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+        
+        .main-content, .sidebar-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* --- HEADER HERO SECTION --- */
+        .header-hero {
+            background-color: #1e293b; /* Slate 800 */
+            padding: 2.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .header-hero {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .header-info p { 
+            color: #94a3b8; /* Slate 400 Muted */
+            font-weight: 300; 
+            font-size: 1.25rem; 
+        }
+
+        /* --- STATS ROW --- */
+        .stats-row { 
+            display: flex; 
+            align-items: center; 
+            gap: 1rem; 
+            margin-top: 1rem; 
+            font-size: 1.125rem;
+        }
+        .rating { 
+            color: #facc15; /* Gold Yellow */
+            font-weight: 600; 
+            display: flex; 
+            align-items: center; 
+        }
+        .rating svg { 
+            width: 1.25rem; 
+            height: 1.25rem; 
+            margin-right: 0.25rem; 
+            fill: currentColor; 
+        }
+        .stats-row .player-count {
+             color: #94a3b8; /* Slate 400 Muted */
+        }
+        .stats-row .player-count strong {
+            color: #93c5fd; /* Light Blue accent */
+            font-weight: 500;
+        }
+
+
+        /* --- LAUNCH BUTTON --- */
+        .launch-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2.5rem;
+            background-color: #ec4899; /* Vibrant Pink */
+            color: white;
+            font-weight: bold;
+            font-size: 1.25rem;
+            border-radius: 0.75rem;
+            transition: all 0.2s;
+            box-shadow: 0 10px 15px -3px rgba(236, 72, 153, 0.5);
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+        }
+        .launch-button:hover {
+            background-color: #be185d; 
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(236, 72, 153, 0.7);
+        }
+        .launch-button svg { 
+            width: 1.75rem; 
+            height: 1.75rem; 
+            margin-right: 0.75rem; 
+        }
+
+        @media (min-width: 768px) {
+            .launch-button {
+                width: auto;
+            }
+        }
+
+        /* --- BACK BUTTON --- */
+        .back-button {
+            display: flex;
+            align-items: center;
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #94a3b8; /* Slate 400 Muted */
+            transition: color 0.2s;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            margin-bottom: 1.5rem;
+        }
+        .back-button:hover {
+            color: #ec4899; /* Vibrant Pink */
+        }
+        .back-button svg { width: 1.25rem; height: 1.25rem; margin-right: 0.5rem; }
+
+        /* --- INFO LIST --- */
+        .info-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .info-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 0.75rem;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5); /* Slate 700 border */
+        }
+        .info-list li:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .info-list li span:first-child { 
+            color: #94a3b8; /* Slate 400 Muted */
+            display: flex; 
+            align-items: center;
+        }
+        .info-list li .icon { 
+            width: 1rem; 
+            height: 1rem; 
+            margin-right: 0.5rem; 
+            color: #ec4899; /* Vibrant Pink */
+            stroke-width: 2; 
+        }
+        
+        /* --- TAGS --- */
+        .tags-card {
+            border: 1px solid rgba(236, 72, 153, 0.5); /* Semi-transparent Pink Border */
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background-color: rgba(236, 72, 153, 0.2); /* Light Pink BG */
+            color: #f9a8d4; /* Very Light Pink text */
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 9999px;
+            border: 1px solid rgba(251, 113, 133, 0.3);
+            transition: background-color 0.2s;
+            cursor: default;
+        }
+        .tag:hover {
+            background-color: rgba(236, 72, 153, 0.4); 
+        }
+
+        /* --- COMMUNITY SCORE --- */
+        .community-score h2 { 
+            color: #ec4899; /* Vibrant Pink */
+            border-bottom: 1px solid #334155; /* Slate 700 Border */
+            padding-bottom: 0.5rem;
+        }
+        .score-display { 
+            padding-top: 1rem; 
+            text-align: center; 
+        }
+        .score-display p:first-child { 
+            font-size: 4rem; 
+            font-weight: 800; 
+            color: #3b82f6; /* Bright Blue */
+            line-height: 1;
+        }
+        .score-display p:last-child { 
+            color: #94a3b8; /* Slate 400 Muted */
+            margin-top: 0.5rem; 
+        }
+        .score-display p:last-child strong { 
+            color: #93c5fd; /* Light Blue accent */
+        }
+
+        /* --- CAROUSEL --- */
+        .media-carousel {
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            position: relative;
+            border: 1px solid #334155; /* Slate 700 Border */
+        }
+        
+        .carousel-container {
+            position: relative;
+            /* 16:9 Aspect Ratio */
+            padding-bottom: 56.25%; 
+            height: 0;
+            overflow: hidden;
+        }
+
+        .carousel-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.5s ease-in-out;
+            z-index: 10;
+        }
+
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            z-index: 20;
+            transition: background-color 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            border: none;
+        }
+        .carousel-arrow:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .carousel-arrow.left { left: 1rem; }
+        .carousel-arrow.right { right: 1rem; }
+        .carousel-arrow svg { width: 1.5rem; height: 1.5rem; }
+
+        /* --- MODAL (NO ALERT) --- */
+        .modal-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #1e293b; /* Slate 800 */
+            border: 2px solid #ec4899; /* Vibrant Pink */
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 0 40px rgba(236, 72, 153, 0.4);
+            text-align: center;
+            min-width: 320px;
+            max-width: 90%;
+        }
+
+        .modal-content p {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            color: #f8fafc; /* Near White */
+        }
+
+        .modal-content button {
+            background-color: #ec4899; /* Vibrant Pink */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            font-weight: 600;
+        }
+        .modal-content button:hover {
+            background-color: #be185d;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Content Container -->
+    <div id="app-container" class="container">
+        <!-- Back Button -->
+        <button class="back-button" onclick="showModal('Navigating back to Game Library...')">
+            <!-- SVG: Left Arrow -->
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg> 
+            Back to Library
+        </button>
+
+        <!-- Hero Section: Title, Rating, Launch -->
+        <header class="header-hero">
+            <div class="header-info">
+                <h1>Knowledge Reactor</h1>
+                <p>Test your core science and tech knowledge in this fast-paced quiz.</p>
+                
+                <!-- Rating and Quick Stats -->
+                <div class="stats-row">
+                    <span class="rating">
+                        <!-- Star Icon -->
+                        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.621-.921 1.921 0l1.24 3.829a1 1 0 00.95.69h4.026c.969 0 1.371 1.24.588 1.81l-3.267 2.376a1 1 0 00-.364 1.118l1.24 3.829c.3.921-.755 1.683-1.539 1.118l-3.267-2.376a1 1 0 00-1.175 0l-3.267 2.376c-.784.565-1.839-.197-1.539-1.118l1.24-3.829a1 1 0 00-.364-1.118L2.004 9.256c-.783-.57-.381-1.81.588-1.81h4.026a1 1 0 00.95-.69l1.24-3.829z"></path></svg>
+                        4.8 / 5.0
+                    </span>
+                    <span style="color: #475569;">|</span>
+                    <span class="player-count"><strong>1.2M</strong> Players</span>
+                </div>
+            </div>
+            
+            <!-- Launch Button -->
+            <button class="launch-button" onclick="showModal('Initiating Game Launch Sequence...')">
+                <!-- Play Icon -->
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132c.241-.161.241-.51 0-.671z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                PLAY NOW
+            </button>
+        </header>
+
+        <!-- Main Content: Media Slider and Info Grid -->
+        <div class="main-grid">
+            
+            <!-- Left Column: Media Carousel -->
+            <div class="main-content">
+                
+                <div class="media-carousel">
+                    <div id="image-carousel" class="carousel-container">
+                        <!-- Image Elements will be added here by JavaScript -->
+                    </div>
+                    
+                    <!-- Navigation Arrows -->
+                    <button class="carousel-arrow left" onclick="changeSlide(-1)">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                    <button class="carousel-arrow right" onclick="changeSlide(1)">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+
+                <!-- Detailed Description -->
+                <div class="card">
+                    <h2 style="border-bottom: 1px solid #334155; padding-bottom: 0.5rem; margin-top: 0;">Detailed Overview</h2>
+                    <p style="color: #94a3b8;">The **Knowledge Reactor** is not just a quiz; it's a dynamic training environment. Each session is timed and adapts its difficulty based on your performance in key scientific domains: Physics, Chemistry, and Computer Science fundamentals. You'll need rapid recall and deep understanding to succeed. Master all levels to unlock the 'Reactor Core' challenge and earn the title of Certified Knowledge Reactor Operator.</p>
+                    
+                    <h3>Key Features:</h3>
+                    <ul class="info-list" style="list-style: disc; margin-left: 1.5rem; color: #94a3b8; padding: 0; margin-bottom: 0;">
+                        <li style="border-bottom: none; justify-content: start; gap: 0.5rem; display: list-item;">Adaptive difficulty scaling in real-time.</li>
+                        <li style="border-bottom: none; justify-content: start; gap: 0.5rem; display: list-item;">Global leaderboards and personalized performance metrics.</li>
+                        <li style="border-bottom: none; justify-content: start; gap: 0.5rem; display: list-item;">Thousands of unique questions covering core STEM topics.</li>
+                        <li style="border-bottom: none; justify-content: start; gap: 0.5rem; display: list-item;">Unlockable achievements and customization rewards.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Right Column: Metadata & Tags -->
+            <div class="sidebar-content">
+                
+                <!-- Game Tags Card (PROMINENT) -->
+                <div class="card tags-card">
+                    <h2 style="color: #ec4899; border-bottom: 1px solid #334155; padding-bottom: 0.5rem; margin-top: 0;">Game Tags</h2>
+                    <div id="tags-container" class="tag-container">
+                        <!-- Tags will be inserted here by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Game Info Card -->
+                <div class="card">
+                    <h2 style="margin-top: 0;">Info & Stats</h2>
+                    <ul class="info-list">
+                        <li>
+                            <span>
+                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> 
+                                Release:
+                            </span> 
+                            <span style="color: #f8fafc;">2024-10-27</span>
+                        </li>
+                        <li>
+                            <span>
+                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg> 
+                                Developer:
+                            </span> 
+                            <span style="color: #f8fafc;">Gemini Labs</span>
+                        </li>
+                        <li>
+                            <span>
+                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L12 19.25L14.25 17M12 4V19.25M17.25 12H6.75"></path></svg> 
+                                Avg. Duration:
+                            </span> 
+                            <span style="color: #f8fafc;">20-30 min</span>
+                        </li>
+                        <li>
+                            <span>
+                                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 13l5-5 5 5M5 19l7-7 7 7"></path></svg> 
+                                Complexity:
+                            </span> 
+                            <span style="color: #93c5fd; font-weight: 500;">Intermediate</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Community Score Card -->
+                <div class="card community-score">
+                    <h2>Top Score</h2>
+                    <div class="score-display">
+                        <p>94,320</p>
+                        <p>Held by User <strong>"QuantumKing"</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- JAVASCRIPT LOGIC --- -->
+    <script>
+        // --- Game Data and State ---
+        const imageSources = [
+            "https://placehold.co/1200x675/1e293b/a5b4fc?text=Reactor+UI+Overview",
+            "https://placehold.co/1200x675/0f766e/d1fae5?text=Gameplay+Question+Screen",
+            "https://placehold.co/1200x675/4c1d95/f5d0fe?text=Leaderboard+View",
+            "https://placehold.co/1200x675/155e75/ecf0f1?text=Chemistry+Module+Challenge"
+        ];
+        
+        const gameTags = [
+            "STEM", "Quiz", "Timed", "Science", "Challenging", 
+            "Logic", "Fast-Paced", "Educational", "Single-Player", "Technical", "Adaptive AI"
+        ];
+        
+        let currentSlide = 0;
+        let slideElements = [];
+
+        // --- Utility Functions (Modal for user feedback) ---
+        /**
+         * Replaces the functionality of alert() with a custom modal.
+         * @param {string} message The message to display in the modal.
+         */
+        function showModal(message) {
+            let modal = document.querySelector('.modal-message');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.className = 'modal-message';
+                document.body.appendChild(modal); 
+            }
+            
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <p>${message}</p>
+                    <button onclick="this.closest('.modal-message').remove()">OK</button>
+                </div>
+            `;
+        }
+
+        // --- Carousel Logic ---
+        function createCarouselItems() {
+            const container = document.getElementById('image-carousel');
+            if (!container) return;
+
+            container.innerHTML = '';
+            slideElements = [];
+
+            imageSources.forEach((src, index) => {
+                const img = document.createElement('img');
+                img.id = 'slide-' + index;
+                img.src = src;
+                img.alt = 'Game Screenshot ' + (index + 1);
+                img.className = 'carousel-item';
+                img.style.opacity = '0'; // Hide initially
+                
+                // Fallback for image load errors
+                img.onerror = function() {
+                    console.error('Image failed to load:', src);
+                    this.src = "https://placehold.co/1200x675/334155/f1f5f9?text=Media+Unavailable";
+                };
+
+                container.appendChild(img);
+                slideElements.push(img);
+            });
+            
+            if (slideElements.length > 0) {
+                showSlide(currentSlide);
+            }
+        }
+
+        /**
+         * Displays the specified slide index, handling wrap-around.
+         * @param {number} index The index of the slide to show.
+         */
+        function showSlide(index) {
+            const maxIndex = slideElements.length - 1;
+            if (maxIndex < 0) return; 
+
+            // Correct for wrap-around indices
+            if (index > maxIndex) {
+                index = 0;
+            } else if (index < 0) {
+                index = maxIndex;
+            }
+            currentSlide = index;
+
+            slideElements.forEach((img, i) => {
+                // We use opacity + zIndex for a smooth fade effect
+                img.style.opacity = (i === currentSlide) ? '1' : '0';
+                img.style.zIndex = (i === currentSlide) ? '15' : '10';
+            });
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // --- Tags Rendering Logic ---
+        function renderTags() {
+            const container = document.getElementById('tags-container');
+            if (!container) return;
+
+            gameTags.forEach(tag => {
+                const span = document.createElement('span');
+                span.textContent = tag;
+                span.className = 'tag'; 
+                container.appendChild(span);
+            });
+        }
+
+        
+        window.onload = function() {
+            createCarouselItems();
+            renderTags();
+        };
+    </script>
+</body>
+</html>
