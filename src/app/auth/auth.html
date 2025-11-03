@@ -23,13 +23,10 @@
         <input type="password" name="confirmPassword" ngModel required placeholder="••••••••" />
       </div>
 
-      <div *ngIf="!isLogin" class="form-group">
-        <label>Display Name</label>
-        <input type="text" name="displayName" ngModel required placeholder="Your nickname" />
-      </div>
 
-      <div class="form-group">
-        <ngx-recaptcha2 #captchaElem [siteKey]="siteKey" name="recaptcha"  required theme="dark">
+
+      <div class="form-group recaptcha">
+        <ngx-recaptcha2 #captchaElem [siteKey]="siteKey" name="recaptcha" required theme="dark">
         </ngx-recaptcha2>
       </div>
       <button type="submit" class="btn primary" [disabled]="authForm.invalid">
@@ -40,11 +37,13 @@
     <div class="divider">
       <span>or</span>
     </div>
+    <div id="g_id_onload" data-client_id="790150872237-e6q4slaj075hi18fjs24as5ha0vgvhmd.apps.googleusercontent.com"
+      data-callback="handleGoogleCredentialResponse" data-auto_prompt="false">
+    </div>
 
-    <button class="btn google" (click)="signInWithGoogle()">
-      <img src="" alt="Google" />
-      Continue with Google
-    </button>
+    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="dark" data-text="sign_in_with"
+      data-shape="rectangular" data-logo_alignment="left">
+    </div>
 
     <p class="switch">
       {{ isLogin ? "Don't have an account?" : 'Already have an account?' }}
