@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core'; 
+import { Component, OnInit } from '@angular/core'; 
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxCaptchaModule } from 'ngx-captcha';
@@ -11,14 +11,14 @@ import { CommonModule } from '@angular/common';
   imports: [FormsModule, NgxCaptchaModule, CommonModule],
   styleUrls: ['./auth.css']
 })
-export class Auth implements AfterViewInit { 
+export class Auth implements OnInit { 
   isLogin = true;
   captchaToken: string | null = null;
   public readonly siteKey = '6LfW0v8rAAAAADQg4SsG6OZrcyYq1IN2XqwcPKuR';
 
   constructor(private router: Router, private http: HttpClient) { }
 
-  ngAfterViewInit() {
+  ngOnInit() {
   
     (window as any)['handleGoogleCredentialResponse'] = 
       this.handleGoogleCredentialResponse.bind(this);
