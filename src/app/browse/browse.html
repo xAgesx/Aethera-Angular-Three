@@ -24,7 +24,7 @@
   </div>
 
   <div class="games-grid">
-    <div *ngFor="let game of filteredGames" class="game-card">
+    <div *ngFor="let game of filteredGames" (click)="openGameDetails(game.id)" class="game-card">
       <div class="thumb">
         <img [src]="game.thumbnail" [alt]="game.title" />
         <div class="thumb-overlay">

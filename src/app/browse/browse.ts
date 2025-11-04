@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Game, GameService } from '../services/game-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -17,7 +18,7 @@ export class Browse implements OnInit {
   selectedTag = 'all';
   searchTerm = '';
 
-  constructor(private gameService: GameService) { }
+  constructor(private gameService: GameService, private router : Router) { }
 
   ngOnInit() {
     this.games = this.gameService.getAllGames();
@@ -48,7 +49,9 @@ export class Browse implements OnInit {
       return matchesTag && matchesSearch;
     });
   }
-
+  openGameDetails(gameId: number) {
+    this.router.navigate(['/details', gameId]);
+  }
   toggleLike(game: Game) {
     this.gameService.toggleLike(game.id);
     game.liked = !game.liked;

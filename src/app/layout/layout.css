@@ -55,6 +55,7 @@
   text-decoration: none;
   transition: all 0.3s ease;
   border-left: 3px solid transparent;
+  cursor:pointer;
 }
 
 .nav-links a i {
@@ -175,4 +176,62 @@
 .page-content {
   padding: 2rem;
   overflow-y: auto;
+}
+.profile-dropdown {
+  position: absolute;
+  bottom: 70px;
+  left: 5px;
+  background: rgba(5, 30, 20, 0.95);
+  border: 1px solid rgba(0, 230, 118, 0.2);
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  width: 190px;
+  box-shadow: 0 0 12px rgba(0, 230, 118, 0.15);
+  animation: fadeIn 0.2s ease;
+}
+
+.profile-dropdown p {
+  margin: 0.3rem 0;
+  color: #b8ffce;
+  font-size: 0.85rem;
+}
+
+.profile-dropdown .email {
+  opacity: 0.8;
+  font-size: 0.8rem;
+}
+
+.profile-dropdown hr {
+  border: none;
+  border-top: 1px solid rgba(0, 230, 118, 0.2);
+  margin: 0.5rem 0;
+}
+
+.profile-dropdown button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: none;
+  color: #a8ffc2;
+  cursor: pointer;
+  font-size: 0.85rem;
+  width: 100%;
+  padding: 0.4rem 0;
+  transition: color 0.2s;
+}
+
+.profile-dropdown button:hover {
+  color: #00e676;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

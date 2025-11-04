@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterOutlet } from "@angular/router";
+import { MainService } from '../services/main-service';
 
 @Component({
   selector: 'app-layout',
@@ -11,13 +12,20 @@ import { RouterOutlet } from "@angular/router";
 export class Layout {
 
   isCollapsed = false;
+  showProfileDropdown = false;
 
+
+  constructor(private mainService : MainService){}
   toggleSidebar() {
     this.isCollapsed = !this.isCollapsed;
   }
 
-  toggleProfile() {
-    // Later: open mini profile dropdown or modal
+
+toggleProfileDropdown() {
+  this.showProfileDropdown = !this.showProfileDropdown;
+}
+  redirect(path : string){
+    this.mainService.redirect(path);
   }
 }
 

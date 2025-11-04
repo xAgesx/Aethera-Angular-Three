@@ -8,24 +8,24 @@
     </div>
 
     <nav class="nav-links">
-      <a routerLink="/browse" routerLinkActive="active">
+      <a (click)="redirect('/browse')" routerLinkActive="active">
         <i class="fas fa-gamepad"></i>
         <span *ngIf="!isCollapsed">Browse</span>
       </a>
-
-      <a routerLink="/profile" routerLinkActive="active">
+      <a (click)="redirect('/dashboard')" routerLinkActive="active">
+        <i class="fas fa-cog"></i>
+        <span *ngIf="!isCollapsed">Dashboard</span>
+      </a>
+      <a (click)="redirect('/profile')" routerLinkActive="active">
         <i class="fas fa-user"></i>
         <span *ngIf="!isCollapsed">Profile</span>
       </a>
 
-      <a routerLink="/settings" routerLinkActive="active">
-        <i class="fas fa-cog"></i>
-        <span *ngIf="!isCollapsed">Settings</span>
-      </a>
+
     </nav>
 
     <div class="sidebar-footer">
-      <div class="profile" (click)="toggleProfile()">
+      <div class="profile" (click)="toggleProfileDropdown()">
         <img src="img" alt="User Avatar" />
         <div *ngIf="!isCollapsed" class="profile-info">
           <span class="name">Alex Learner</span>
@@ -37,20 +37,36 @@
       </button>
     </div>
   </aside>
-
-  <!-- Main content -->
-  <div class="main-content">
-    <header class="topbar">
-      <h1>Aethera Platform</h1>
-      <div class="top-actions">
-        <input type="text" placeholder="Search..." />
-        <button><i class="fas fa-bell"></i></button>
-        <button><i class="fas fa-sign-out-alt"></i></button>
-      </div>
-    </header>
-
-    <section class="page-content">
-      <router-outlet></router-outlet>
-    </section>
+  <!-- Small dropdown for profile -->
+  <div class="profile-dropdown" *ngIf="showProfileDropdown">
+    <p><strong>Alex Learner</strong></p>
+    <p class="email">alex@aethera.com</p>
+    <hr />
+    <button (click)="redirect('/profile')">
+      <i class="fas fa-user"></i> View Profile
+    </button>
+    <button>
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
   </div>
+
+  <button class="collapse-btn" (click)="toggleSidebar()">
+    <i class="fas" [ngClass]="isCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'"></i>
+  </button>
+
+<!-- Main content -->
+<div class="main-content">
+  <header class="topbar">
+    <h1>Aethera Platform</h1>
+    <div class="top-actions">
+      <input type="text" placeholder="Search..." />
+      <button><i class="fas fa-bell"></i></button>
+      <button><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+  </header>
+
+  <section class="page-content">
+    <router-outlet></router-outlet>
+  </section>
+</div>
 </div>

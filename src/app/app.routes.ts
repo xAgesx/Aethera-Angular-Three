@@ -14,7 +14,8 @@ export const routes: Routes = [
     {
         path: '', component: Layout,
         children: [
-            { path: 'browse', component: Browse }
+            { path: 'browse', component: Browse },
+            { path: 'details/:id', component: GameDetails }
         ]
     }
 
