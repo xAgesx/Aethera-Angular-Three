@@ -82,8 +82,8 @@ export class Landing implements AfterViewInit, OnDestroy {
     });
 
     // slight camera parallax based on mouse
-    this.camera.position.x += (this.mouseX - this.camera.position.x) * 0.02;
-    this.camera.position.y += (-this.mouseY - this.camera.position.y) * 0.02;
+    this.camera.position.x += (this.mouseX - this.camera.position.x) * 1;
+    this.camera.position.y += (-this.mouseY - this.camera.position.y) * 1;
     this.camera.lookAt(this.scene.position);
 
     this.renderer.render(this.scene, this.camera);

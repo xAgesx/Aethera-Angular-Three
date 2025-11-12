@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-browse',
-  imports:[CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './browse.html',
   styleUrls: ['./browse.css']
 })
@@ -18,12 +18,17 @@ export class Browse implements OnInit {
   selectedTag = 'all';
   searchTerm = '';
 
-  constructor(private gameService: GameService, private router : Router) { }
+  constructor(private gameService: GameService, private router: Router) { }
 
   ngOnInit() {
-    this.games = this.gameService.getAllGames();
-    this.filteredGames = [...this.games];
-    this.tags = this.gameService.getAllTags();
+    setTimeout(() => {
+      this.games = this.gameService.getAllGames();
+
+      this.filteredGames = [...this.games];
+      this.tags = this.gameService.getAllTags();
+      console.log('games in component : ', this.games);
+    },1000); 
+
   }
 
   onSearchChange(value: string) {
@@ -38,8 +43,7 @@ export class Browse implements OnInit {
 
   applyFilters() {
     this.filteredGames = this.games.filter(game => {
-      const matchesTag =
-        this.selectedTag === 'all' || game.tags.includes(this.selectedTag);
+      const matchesTag = this.selectedTag === 'all' || game.tags.includes(this.selectedTag);
 
       const matchesSearch =
         game.title.toLowerCase().includes(this.searchTerm) ||
