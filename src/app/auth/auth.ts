@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core'; 
+import { Component, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxCaptchaModule } from 'ngx-captcha';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { FirebaseService, User } from '../services/firebase-service';
+import { pass } from 'three/tsl';
+import firebase from 'firebase/compat/app';
 
 @Component({
   selector: 'app-auth',
@@ -11,31 +14,32 @@ import { CommonModule } from '@angular/common';
   imports: [FormsModule, NgxCaptchaModule, CommonModule],
   styleUrls: ['./auth.css']
 })
-export class Auth implements OnInit { 
+export class Auth {
+  errorMessage = '';
   isLogin = true;
   captchaToken: string | null = null;
   public readonly siteKey = '6LfW0v8rAAAAADQg4SsG6OZrcyYq1IN2XqwcPKuR';
 
-  constructor(private router: Router, private http: HttpClient) { }
+  constructor(private router: Router, private http: HttpClient, private firebaseService: FirebaseService) { }
 
   ngOnInit() {
-  
-    (window as any)['handleGoogleCredentialResponse'] = 
+
+    (window as any)['handleGoogleCredentialResponse'] =
       this.handleGoogleCredentialResponse.bind(this);
   }
 
-  
+
   handleGoogleCredentialResponse(response: any): void {
     if (response.credential) {
       const idToken = response.credential;
       const backendUrl = 'http://localhost/Backend/google-callback.php';
-      
+
       this.http.post(backendUrl, { id_token: idToken })
         .subscribe({
           next: (res: any) => {
             if (res.success) {
               console.log('Google login verified and successful!', res.user);
-              this.router.navigate(['/layout']); 
+              this.router.navigate(['/layout']);
             } else {
               console.error('Google verification failed:', res.message);
             }
@@ -46,7 +50,7 @@ export class Auth implements OnInit {
         });
     }
   }
-  
+
   handleCaptchaResponse(token: string) {
     this.captchaToken = token;
     console.log('reCAPTCHA Token received:', token);
@@ -57,6 +61,8 @@ export class Auth implements OnInit {
   }
 
   onSubmit(authForm: NgForm) {
+    this.errorMessage = "submitted form";
+
     if (authForm.invalid) {
       console.log('Form is invalid (reCAPTCHA not checked or fields empty).');
       return;
@@ -64,26 +70,41 @@ export class Auth implements OnInit {
 
     const backendUrl = 'http://localhost/Backend/verify_recaptcha.php';
 
-    this.http.post(backendUrl, authForm.value)
+    this.http.post(backendUrl, { recaptcha: authForm.value.recaptcha })
       .subscribe({
         next: (response: any) => {
           console.log('Backend Response:', response);
           if (response.success) {
             console.log('reCAPTCHA verified and login/signup successful!');
-            this.router.navigate(['/layout']); 
+
           } else {
             console.error('Authentication failed:', response.message);
+            this.errorMessage = "ReCAPTCHA Verification Failed";
+
           }
         },
         error: (error) => {
           console.error('Network or Server Error:', error);
         }
       });
+
+      if(this.isLogin){
+        let userInfo = this.firebaseService.getUserByEmail(authForm.value.email);
+        console.log(userInfo);
+        if(userInfo == undefined){
+          this.errorMessage = 'Email Not Registered';
+        }else{
+          this.errorMessage = 'Done';
+          
+        }
+      }
+
   }
 
+  addUser(user: User) {
+    this.firebaseService.addUser(user);
+  }
   redirect(path: string) {
     this.router.navigate([path]);
   }
-  
-  // signInWithGoogle() is now unused as Google handles the click directly
 }

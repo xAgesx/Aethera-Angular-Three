@@ -4,7 +4,7 @@
   <aside [class.collapsed]="isCollapsed" class="sidebar">
     <div class="logo">
       <img src="assets/aethera-logo.png" alt="Aethera Logo" />
-      <span *ngIf="!isCollapsed" class="logo-text">Aethera</span>
+      <span *ngIf="!isCollapsed" class="logo-text" (click)="redirect('/landing')" >Aethera</span>
     </div>
 
     <nav class="nav-links">

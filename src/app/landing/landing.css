@@ -1,4 +1,4 @@
-/* landing.component.css */
+
 
 .landing-container {
   position: relative;
@@ -85,4 +85,16 @@
   background: rgba(29, 233, 182, 0.1);
   border-color: #00e676;
   color: #fff;
+}
+@media(max-width: 550px) {
+.title {
+  font-size: 3rem; 
+}
+.subtitle {
+  font-size: 1rem;
+}
+.buttons{
+  flex-wrap: wrap;
+}
+
 }
