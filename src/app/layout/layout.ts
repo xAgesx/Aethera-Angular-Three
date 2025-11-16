@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-layout',
-  imports: [RouterOutlet,CommonModule],
+  imports: [RouterOutlet, CommonModule],
   templateUrl: './layout.html',
   styleUrl: './layout.css',
 })
@@ -15,20 +15,22 @@ export class Layout {
 
   isCollapsed = false;
   showProfileDropdown = false;
-  loggedUser ?: string ;
+  loggedUser?: string;
 
 
-  constructor(private mainService : MainService){}
-    toggleSidebar() {
+  constructor(private mainService: MainService) { }
+  toggleSidebar() {
     this.isCollapsed = !this.isCollapsed;
+  }
+  ngOnInit() {
     this.loggedUser = sessionStorage.getItem('email') ?? undefined;
+
   }
 
-
-toggleProfileDropdown() {
-  this.showProfileDropdown = !this.showProfileDropdown;
-}
-  redirect(path : string){
+  toggleProfileDropdown() {
+    this.showProfileDropdown = !this.showProfileDropdown;
+  }
+  redirect(path: string) {
     this.mainService.redirect(path);
   }
 }
