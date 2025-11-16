@@ -61,7 +61,6 @@ export class Auth {
   }
 
   onSubmit(authForm: NgForm) {
-    this.errorMessage = "submitted form";
 
     if (authForm.invalid) {
       console.log('Form is invalid (reCAPTCHA not checked or fields empty).');
@@ -88,16 +87,25 @@ export class Auth {
         }
       });
 
-      if(this.isLogin){
-        let userInfo = this.firebaseService.getUserByEmail(authForm.value.email);
-        console.log(userInfo);
-        if(userInfo == undefined){
-          this.errorMessage = 'Email Not Registered';
-        }else{
-          this.errorMessage = 'Done';
-          
+
+    this.firebaseService.getUserByEmail(authForm.value.email).subscribe(data => {
+      console.log('data', data);
+      if (this.isLogin) {
+        if (data.length == 0) {
+          this.errorMessage = 'User Not Registered';
+        } else {
+          this.redirect('/browse');
+        }
+      } else {
+        if(data.length == 0 ){
+          this.firebaseService.addUser({email : authForm.value.email,password : authForm.value.password});
+          sessionStorage.setItem('email',authForm.value.email);
+          this.redirect('/browse');
         }
       }
+
+    });;
+
 
   }
 

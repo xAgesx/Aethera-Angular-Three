@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterOutlet } from "@angular/router";
 import { MainService } from '../services/main-service';
+import { User } from 'firebase/auth';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-layout',
@@ -13,11 +15,13 @@ export class Layout {
 
   isCollapsed = false;
   showProfileDropdown = false;
+  loggedUser ?: string ;
 
 
   constructor(private mainService : MainService){}
-  toggleSidebar() {
+    toggleSidebar() {
     this.isCollapsed = !this.isCollapsed;
+    this.loggedUser = sessionStorage.getItem('email') ?? undefined;
   }
 
 

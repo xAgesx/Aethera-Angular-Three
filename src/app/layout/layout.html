@@ -28,7 +28,7 @@
       <div class="profile" (click)="toggleProfileDropdown()">
         <img src="img" alt="User Avatar" />
         <div *ngIf="!isCollapsed" class="profile-info">
-          <span class="name">Alex Learner</span>
+          <span class="name">{{loggedUser}}</span>
           <small>Student</small>
         </div>
       </div>
