@@ -94,7 +94,11 @@ export class Auth {
         if (data.length == 0) {
           this.errorMessage = 'User Not Registered';
         } else {
+          if(authForm.value.password == data[0].password){
           this.redirect('/browse');
+          }else{
+            this.errorMessage = "Wrong Credentials";
+          }
         }
       } else {
         if(data.length == 0 ){
