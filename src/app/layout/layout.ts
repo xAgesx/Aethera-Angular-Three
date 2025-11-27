@@ -16,6 +16,7 @@ export class Layout {
   isCollapsed = false;
   showProfileDropdown = false;
   loggedUser?: string;
+  loggedEmail?: string;
 
 
   constructor(private mainService: MainService) { }
@@ -23,12 +24,19 @@ export class Layout {
     this.isCollapsed = !this.isCollapsed;
   }
   ngOnInit() {
-    this.loggedUser = sessionStorage.getItem('email') ?? undefined;
 
+    this.loggedEmail = sessionStorage.getItem('email') ?? undefined;
+    if (this.loggedEmail) {
+      this.loggedUser = this.loggedEmail?.split('@', 1)[0];
+    }
   }
 
   toggleProfileDropdown() {
     this.showProfileDropdown = !this.showProfileDropdown;
+  }
+  logout(){
+    sessionStorage.clear();
+    this.redirect("/landing");
   }
   redirect(path: string) {
     this.mainService.redirect(path);

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -6,8 +6,6 @@ import { Router } from '@angular/router';
 })
 export class MainService {
   
-
-
 
   constructor(private router : Router){}
   redirect(path : string){

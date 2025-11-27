@@ -245,4 +245,9 @@
   .sidebar{
     display: none;
   }
+  .top-actions input {
+  
+  border-radius: 10px;
+  width: 100px;
+}
 }

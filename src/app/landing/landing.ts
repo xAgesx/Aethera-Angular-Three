@@ -25,6 +25,12 @@ export class Landing implements AfterViewInit, OnDestroy {
     this.animate();
   }
    redirect(path : string){
+
+    if(sessionStorage.getItem('email')){
+      path = '/browse';  
+    }else{
+      path = '/auth';
+    }
     this.router.navigate([path]);
   }
   private initScene(): void {

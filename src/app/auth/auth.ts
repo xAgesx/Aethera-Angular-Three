@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxCaptchaModule } from 'ngx-captcha';
@@ -7,6 +7,8 @@ import { CommonModule } from '@angular/common';
 import { FirebaseService, User } from '../services/firebase-service';
 import { pass } from 'three/tsl';
 import firebase from 'firebase/compat/app';
+import { error } from 'three';
+import { signalUpdateFn } from '@angular/core/primitives/signals';
 
 @Component({
   selector: 'app-auth',
@@ -19,11 +21,15 @@ export class Auth {
   isLogin = true;
   captchaToken: string | null = null;
   public readonly siteKey = '6LfW0v8rAAAAADQg4SsG6OZrcyYq1IN2XqwcPKuR';
+  
+  //Password settings
+  passwordVisible = false;
+  password ?: string;
 
   constructor(private router: Router, private http: HttpClient, private firebaseService: FirebaseService) { }
 
   ngOnInit() {
-
+    this.passwordVisible = false;
     (window as any)['handleGoogleCredentialResponse'] =
       this.handleGoogleCredentialResponse.bind(this);
   }
@@ -69,6 +75,7 @@ export class Auth {
 
     const backendUrl = 'http://localhost/Backend/verify_recaptcha.php';
 
+    //Handle ReCaptcha
     this.http.post(backendUrl, { recaptcha: authForm.value.recaptcha })
       .subscribe({
         next: (response: any) => {
@@ -87,30 +94,79 @@ export class Auth {
         }
       });
 
-
+    if (!this.verifForm(authForm)) {
+      return;
+    }
     this.firebaseService.getUserByEmail(authForm.value.email).subscribe(data => {
       console.log('data', data);
+      // Login 
       if (this.isLogin) {
-        if (data.length == 0) {
-          this.errorMessage = 'User Not Registered';
-        } else {
-          if(authForm.value.password == data[0].password){
-          this.redirect('/browse');
-          }else{
-            this.errorMessage = "Wrong Credentials";
-          }
-        }
-      } else {
-        if(data.length == 0 ){
-          this.firebaseService.addUser({email : authForm.value.email,password : authForm.value.password});
-          sessionStorage.setItem('email',authForm.value.email);
-          this.redirect('/browse');
-        }
+        this.login(data, authForm);
+      }
+      // Signup
+      else {
+        this.signup(data, authForm);
       }
 
     });;
 
 
+  }
+  public verifForm(authForm: any) {
+    this.errorMessage = '';
+    let email = authForm.value.email;
+    let password = authForm.value.password;
+    if (!this.verifEmail(email)) {
+      this.errorMessage = "Email Is Invalid";
+      console.log(password.trim() != '' && (password.length < 6 || !this.containsUppercase(password)));
+      return false;
+    }
+    
+    else if (password.trim() != '' && (password.length < 6 || !this.containsUppercase(password))) {
+      this.errorMessage = "Password Must Be At Least 5 Caracters Long And Must Have 1 Capital";
+      return false;
+
+    }
+    else if (password != authForm.value.confirmPassword && authForm.value.confirmPassword.trim() !='') {
+      this.errorMessage = "Passwords Don't Match";
+      return false;
+    }
+    
+    return true;
+  }
+  
+  
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
+    console.log(this.passwordVisible);
+  }
+  verifEmail(email: string) {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  }
+  containsUppercase(str: string) {
+    return /[A-Z]/.test(str);
+  }
+  signup(data: any, authForm: any) {
+    if (data.length == 0) {
+      this.firebaseService.addUser({ email: authForm.value.email, password: authForm.value.password });
+      sessionStorage.setItem('email', authForm.value.email);
+      this.redirect('/browse');
+    } else {
+      this.errorMessage = "User Already Registered"
+    }
+  }
+  login(data: any, authForm: any) {
+    if (data.length == 0) {
+      this.errorMessage = 'User Not Registered';
+    } else {
+      if (authForm.value.password == data[0].password) {
+        this.redirect('/browse');
+        sessionStorage.setItem('email', authForm.value.email);
+      } else {
+        this.errorMessage = "Wrong Credentials";
+      }
+    }
   }
 
   addUser(user: User) {

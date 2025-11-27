@@ -20,26 +20,19 @@
         </span>
       </div>
     </div>
+    <button class="like-btn">Like</button>
 
     <button class="launch-button" (click)="launchGame()">
       <i class="fas fa-play"></i> Play Now
     </button>
-    
   </header>
 
-  <!-- Main Grid Layout -->
+
   <div class="main-grid">
-    <!-- LEFT: Media + Overview -->
     <div class="main-content">
-      <!-- Image Carousel -->
       <div class="media-carousel" *ngIf="game.images && game.images.length > 0">
-        <img
-          *ngFor="let img of game.images; let i = index"
-          [src]="img"
-          [alt]="game?.title + ' screenshot ' + (i + 1)"
-          class="carousel-item"
-          [style.opacity]="i === currentSlide ? '1' : '0'"
-        />
+        <img *ngFor="let img of game.images; let i = index" [src]="img" [alt]="game?.title + ' screenshot ' + (i + 1)"
+          class="carousel-item" [style.opacity]="i === currentSlide ? '1' : '0'" />
 
         <button class="carousel-arrow left" (click)="changeSlide(-1)">
           <i class="fas fa-chevron-left"></i>
@@ -49,24 +42,20 @@
         </button>
       </div>
 
-      <!-- Overview -->
       <div class="card overview-card">
         <h2>Overview</h2>
         <p>{{ game?.longDescription || 'No additional details available.' }}</p>
       </div>
     </div>
 
-    <!-- RIGHT: Tags + Info + Score -->
+
     <aside class="sidebar-content">
-      <!-- Tags -->
       <div class="card tags-card" *ngIf="game.tags?.length">
         <h2>Game Tags</h2>
         <div class="tag-container">
           <span *ngFor="let tag of game.tags" class="tag">{{ tag }}</span>
         </div>
       </div>
-
-      <!-- Info -->
       <div class="card">
         <h2>Game Info</h2>
         <ul class="info-list">
@@ -76,8 +65,6 @@
           <li><span>Complexity:</span> <span>{{ game?.complexity || 'N/A' }}</span></li>
         </ul>
       </div>
-
-      <!-- Top Score -->
       <div class="card community-score" *ngIf="game.topScore">
         <h2>Top Score</h2>
         <div class="score-display">
@@ -86,7 +73,7 @@
         </div>
       </div>
 
-      
+
     </aside>
   </div>
 </div>

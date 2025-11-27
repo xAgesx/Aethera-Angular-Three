@@ -39,13 +39,13 @@
   </aside>
   <!-- Small dropdown for profile -->
   <div class="profile-dropdown" *ngIf="showProfileDropdown">
-    <p><strong>Alex Learner</strong></p>
-    <p class="email">alex@aethera.com</p>
+    <p><strong>{{loggedUser}}</strong></p>
+    <p class="email">{{loggedEmail}}</p>
     <hr />
     <button (click)="redirect('/profile')">
       <i class="fas fa-user"></i> View Profile
     </button>
-    <button>
+    <button (click)="logout()">
       <i class="fas fa-sign-out-alt"></i> Logout
     </button>
   </div>
