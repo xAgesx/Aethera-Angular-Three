@@ -122,7 +122,7 @@ export class Auth {
       return false;
     }
     
-    else if (password.trim() != '' && (password.length < 6 || !this.containsUppercase(password))) {
+    else if (password.trim() != ''&& !this.isLogin && (password.length < 6 || !this.containsUppercase(password))) {
       this.errorMessage = "Password Must Be At Least 5 Caracters Long And Must Have 1 Capital";
       return false;
 
