@@ -4,8 +4,10 @@ import { Observable } from 'rxjs';
 
 export interface User{
   email?:string,
-  password ?: string
-
+  password ?: string,
+  username ?:string,
+  role ?: string,
+  bio ?: string
 }
 @Injectable({
   providedIn: 'root',
@@ -13,9 +15,15 @@ export interface User{
 export class FirebaseService {
   
   collectionName = 'AetheraUsers';
-
+  connectedUser ?: User ;
   constructor(private firestore : Firestore){
+    let sessionsEmail = sessionStorage.getItem('email');
+    if(sessionsEmail){
+      this.getUserByEmail(sessionsEmail).subscribe(data => {
+      this.connectedUser = data[0] as User;
+    });;
 
+    }
   }
   addUser(user: User) {
     const col = collection(this.firestore, this.collectionName);

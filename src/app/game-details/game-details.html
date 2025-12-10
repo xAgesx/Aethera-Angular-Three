@@ -7,16 +7,16 @@
   <!-- Game Header -->
   <header class="header-hero">
     <div class="header-info">
-      <h1>{{ game?.title }}</h1>
-      <p class="short-desc">{{ game?.description }}</p>
+      <h1>{{ game.title }}</h1>
+      <p class="short-desc">{{ game.description }}</p>
 
       <div class="stats-row">
         <span class="rating">
-          <i class="fas fa-star"></i> {{ game?.rating || 'N/A' }}
+          <i class="fas fa-star"></i> {{ game.rating || 'N/A' }}
         </span>
         <span class="divider">|</span>
         <span class="players">
-          <strong>{{ game?.players || '0' }}</strong> Players
+          <strong>{{ game.players || '0' }}</strong> Players
         </span>
       </div>
     </div>
@@ -31,7 +31,7 @@
   <div class="main-grid">
     <div class="main-content">
       <div class="media-carousel" *ngIf="game.images && game.images.length > 0">
-        <img *ngFor="let img of game.images; let i = index" [src]="img" [alt]="game?.title + ' screenshot ' + (i + 1)"
+        <img *ngFor="let img of game.images; let i = index" [src]="img" [alt]="game.title + ' screenshot ' + (i + 1)"
           class="carousel-item" [style.opacity]="i === currentSlide ? '1' : '0'" />
 
         <button class="carousel-arrow left" (click)="changeSlide(-1)">
@@ -44,13 +44,13 @@
 
       <div class="card overview-card">
         <h2>Overview</h2>
-        <p>{{ game?.longDescription || 'No additional details available.' }}</p>
+        <p>{{ game.longDescription || 'No additional details available.' }}</p>
       </div>
     </div>
 
 
     <aside class="sidebar-content">
-      <div class="card tags-card" *ngIf="game.tags?.length">
+      <div class="card tags-card" *ngIf="game.tags.length">
         <h2>Game Tags</h2>
         <div class="tag-container">
           <span *ngFor="let tag of game.tags" class="tag">{{ tag }}</span>
@@ -59,17 +59,17 @@
       <div class="card">
         <h2>Game Info</h2>
         <ul class="info-list">
-          <li><span>Release:</span> <span>{{ game?.release || 'N/A' }}</span></li>
-          <li><span>Developer:</span> <span>{{ game?.developer || 'Unknown' }}</span></li>
-          <li><span>Duration:</span> <span>{{ game?.duration || 'N/A' }}</span></li>
-          <li><span>Complexity:</span> <span>{{ game?.complexity || 'N/A' }}</span></li>
+          <li><span>Release:</span> <span>{{ game.release || 'N/A' }}</span></li>
+          <li><span>Developer:</span> <span>{{ game.developer || 'Unknown' }}</span></li>
+          <li><span>Duration:</span> <span>{{ game.duration || 'N/A' }}</span></li>
+          <li><span>Complexity:</span> <span>{{ game.complexity || 'N/A' }}</span></li>
         </ul>
       </div>
       <div class="card community-score" *ngIf="game.topScore">
         <h2>Top Score</h2>
         <div class="score-display">
-          <p class="score">{{ game?.topScore }}</p>
-          <p>Held by <strong>{{ game?.topPlayer || 'Anonymous' }}</strong></p>
+          <p class="score">{{ game.topScore }}</p>
+          <p>Held by <strong>{{ game.topPlayer || 'Anonymous' }}</strong></p>
         </div>
       </div>
 

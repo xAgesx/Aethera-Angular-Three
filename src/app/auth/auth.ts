@@ -98,7 +98,10 @@ export class Auth {
       return;
     }
     this.firebaseService.getUserByEmail(authForm.value.email).subscribe(data => {
-      console.log('data', data);
+      console.log('data : ', data);
+      this.firebaseService.connectedUser = data[0] as User;
+      console.log('ConnectedUser ', this.firebaseService.connectedUser );
+
       // Login 
       if (this.isLogin) {
         this.login(data, authForm);
@@ -116,6 +119,11 @@ export class Auth {
     this.errorMessage = '';
     let email = authForm.value.email;
     let password = authForm.value.password;
+    //Ignore Confirm Password in Login
+    if(this.isLogin){
+      authForm.value.confirmPassword = password;
+    }
+    
     if (!this.verifEmail(email)) {
       this.errorMessage = "Email Is Invalid";
       console.log(password.trim() != '' && (password.length < 6 || !this.containsUppercase(password)));
@@ -149,7 +157,8 @@ export class Auth {
   }
   signup(data: any, authForm: any) {
     if (data.length == 0) {
-      this.firebaseService.addUser({ email: authForm.value.email, password: authForm.value.password });
+      let username = authForm.value.email?.split('@', 1)[0];
+      this.firebaseService.addUser({ email: authForm.value.email, password: authForm.value.password ,username : username ,role:'Member',bio:'Nothing To See Here' });
       sessionStorage.setItem('email', authForm.value.email);
       this.redirect('/browse');
     } else {
