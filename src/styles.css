@@ -1,5 +1,119 @@
-/* You can add global styles to this file, and also import other style files */
+
 *{
   margin: 0;
   padding: 0;
 }
+
+.notification-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    z-index: 9999;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    justify-content: center;
+    padding: 20px 20px;
+    height: 50px;
+}
+
+.notification-container.show {
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+}
+
+
+.notification-popup {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+
+.notification-popup.success {
+    border-left: 5px solid #10b981;
+}
+
+.notification-popup.error {
+    border-left: 5px solid #ef4444;
+}
+
+
+.notification-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.success .notification-icon { color: #10b981; }
+.error .notification-icon { color: #ef4444; }
+
+
+.notification-content {
+    flex-grow: 1;
+}
+
+.notification-message {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #ffffff;
+}
+
+
+.notification-close {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 4px;
+    transition: color 0.2s;
+}
+
+.notification-close:hover {
+    color: #ffffff;
+}
+
+
+.notification-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.notification-progress::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background: currentColor;
+    animation: progress 5s linear forwards;
+}
+
+@keyframes progress {
+    from { width: 100%; }
+    to { width: 0%; }
+}
+
+.success .notification-progress::after { background-color: #10b981; }
+.error .notification-progress::after { background-color: #ef4444; }

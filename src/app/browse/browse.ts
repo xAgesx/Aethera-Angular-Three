@@ -18,7 +18,14 @@ export class Browse implements OnInit {
   selectedTag = 'all';
   searchTerm = '';
 
-  constructor(private gameService: GameService, private router: Router) { }
+  constructor(private gameService: GameService, private router: Router) { 
+
+
+
+
+    let x= sessionStorage.getItem('test');
+    console.log(x,"browse");
+  }
 
   ngOnInit() {
     setTimeout(() => {

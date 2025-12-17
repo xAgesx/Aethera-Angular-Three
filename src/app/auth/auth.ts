@@ -5,10 +5,7 @@ import { NgxCaptchaModule } from 'ngx-captcha';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FirebaseService, User } from '../services/firebase-service';
-import { pass } from 'three/tsl';
-import firebase from 'firebase/compat/app';
-import { error } from 'three';
-import { signalUpdateFn } from '@angular/core/primitives/signals';
+import { MainService } from '../services/main-service';
 
 @Component({
   selector: 'app-auth',
@@ -17,16 +14,16 @@ import { signalUpdateFn } from '@angular/core/primitives/signals';
   styleUrls: ['./auth.css']
 })
 export class Auth {
-  errorMessage = '';
+
   isLogin = true;
   captchaToken: string | null = null;
   public readonly siteKey = '6LfW0v8rAAAAADQg4SsG6OZrcyYq1IN2XqwcPKuR';
-  
+
   //Password settings
   passwordVisible = false;
-  password ?: string;
+  password?: string;
 
-  constructor(private router: Router, private http: HttpClient, private firebaseService: FirebaseService) { }
+  constructor(private router: Router, private http: HttpClient, private firebaseService: FirebaseService, public mainService: MainService) { }
 
   ngOnInit() {
     this.passwordVisible = false;
@@ -85,7 +82,7 @@ export class Auth {
 
           } else {
             console.error('Authentication failed:', response.message);
-            this.errorMessage = "ReCAPTCHA Verification Failed";
+            this.mainService.showNotification('error', "ReCAPTCHA Verification Failed");;
 
           }
         },
@@ -100,7 +97,7 @@ export class Auth {
     this.firebaseService.getUserByEmail(authForm.value.email).subscribe(data => {
       console.log('data : ', data);
       this.firebaseService.connectedUser = data[0] as User;
-      console.log('ConnectedUser ', this.firebaseService.connectedUser );
+      console.log('ConnectedUser ', this.firebaseService.connectedUser);
 
       // Login 
       if (this.isLogin) {
@@ -116,34 +113,33 @@ export class Auth {
 
   }
   public verifForm(authForm: any) {
-    this.errorMessage = '';
     let email = authForm.value.email;
     let password = authForm.value.password;
     //Ignore Confirm Password in Login
-    if(this.isLogin){
+    if (this.isLogin) {
       authForm.value.confirmPassword = password;
     }
-    
+
     if (!this.verifEmail(email)) {
-      this.errorMessage = "Email Is Invalid";
+      this.mainService.showNotification('error', 'Email Is Invalid');
       console.log(password.trim() != '' && (password.length < 6 || !this.containsUppercase(password)));
       return false;
     }
-    
-    else if (password.trim() != ''&& !this.isLogin && (password.length < 6 || !this.containsUppercase(password))) {
-      this.errorMessage = "Password Must Be At Least 5 Caracters Long And Must Have 1 Capital";
+
+    else if (password.trim() != '' && !this.isLogin && (password.length < 6 || !this.containsUppercase(password))) {
+      this.mainService.showNotification('error', '"Password Must Be At Least 5 Caracters Long And Must Have 1 Capital"');
       return false;
 
     }
-    else if (password != authForm.value.confirmPassword && authForm.value.confirmPassword.trim() !='') {
-      this.errorMessage = "Passwords Don't Match";
+    else if (password != authForm.value.confirmPassword && authForm.value.confirmPassword.trim() != '') {
+      this.mainService.showNotification('error', "Password Don't Match");
       return false;
     }
-    
+
     return true;
   }
-  
-  
+
+
   togglePasswordVisibility() {
     this.passwordVisible = !this.passwordVisible;
     console.log(this.passwordVisible);
@@ -158,22 +154,24 @@ export class Auth {
   signup(data: any, authForm: any) {
     if (data.length == 0) {
       let username = authForm.value.email?.split('@', 1)[0];
-      this.firebaseService.addUser({ email: authForm.value.email, password: authForm.value.password ,username : username ,role:'Member',bio:'Nothing To See Here' });
+      this.firebaseService.addUser({ email: authForm.value.email, password: authForm.value.password, username: username, role: 'Member', bio: 'Nothing To See Here' });
       sessionStorage.setItem('email', authForm.value.email);
-      this.redirect('/browse');
+      this.mainService.showNotification('success', 'You are in ! Welcome to the community');
+      this.redirectWithDelay('/browse', 2000);
     } else {
-      this.errorMessage = "User Already Registered"
+      this.mainService.showNotification('error', "User Already Registered");
     }
   }
   login(data: any, authForm: any) {
     if (data.length == 0) {
-      this.errorMessage = 'User Not Registered';
+      this.mainService.showNotification('error', 'User Is Not Registered');
     } else {
       if (authForm.value.password == data[0].password) {
-        this.redirect('/browse');
+        this.redirectWithDelay('/browse', 2000);
         sessionStorage.setItem('email', authForm.value.email);
+        this.mainService.showNotification('success', 'Welcome Back !');
       } else {
-        this.errorMessage = "Wrong Credentials";
+        this.mainService.showNotification('error', 'Wrong Credentials');
       }
     }
   }
@@ -183,5 +181,10 @@ export class Auth {
   }
   redirect(path: string) {
     this.router.navigate([path]);
+  }
+  redirectWithDelay(path: string, delay: number) {
+    setTimeout(() => {
+      this.router.navigate([path]);
+    }, delay);
   }
 }

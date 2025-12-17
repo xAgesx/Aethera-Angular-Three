@@ -1,56 +1,66 @@
-import { ChangeDetectionStrategy, Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MainService } from '../services/main-service';
 import { FirebaseService, User } from '../services/firebase-service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './profile.html',
-  styleUrl: './profile.css',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-root',
+    templateUrl: './profile.html',
+    styleUrl: './profile.css',
+    imports: [CommonModule, FormsModule]
 })
 export class Profile implements OnInit {
-    
+
     activeTab = signal<'info' | 'security' | 'avatar'>('info');
     isEditMode = signal(false);
     isModalOpen = signal(false);
-    notification = signal<{ message: string; type: 'success' | 'error' | null }>({ message: '', type: null });
-    profile ?: User;
-    
-    constructor(private mainService : MainService,private firebaseService : FirebaseService){}
+  
+    profile: User | null = null;
+    private originalProfile: User | null = null;
 
-    private originalProfile = { ...this.profile };
+    constructor(
+        public mainService: MainService, 
+        private firebaseService: FirebaseService,
+
+    ) { }
 
     ngOnInit(): void {
-      
-      //Redirect if not logged in 
-      if(!sessionStorage.getItem('email')){
-        this.mainService.redirect('/landing');
-        return;
-      }
+        const sessionEmail = sessionStorage.getItem('email');
+        if (!sessionEmail) {
+            this.mainService.redirect('/landing');
+            return;
+        }
 
-      //get data from firebase Service
-      this.profile = this.firebaseService.connectedUser;
-      console.log('Profile : ',this.profile);
-      console.log('ConnectedUser service : ',this.firebaseService.connectedUser);
-      
+        if (this.firebaseService.connectedUser && this.firebaseService.connectedUser.email === sessionEmail) {
+            this.setProfileData(this.firebaseService.connectedUser);
+        } else {
+            this.firebaseService.getUserByEmail(sessionEmail).subscribe(data => {
+                if (data && data.length > 0) {
+                    this.setProfileData(data[0]);
+                }
+            });
+        }
+    }
+
+    private setProfileData(user: User): void {
+        this.profile = { ...user };
+        this.originalProfile = { ...user };
+        
     }
 
     showTab(tab: 'info' | 'security' | 'avatar'): void {
         this.activeTab.set(tab);
-        this.isEditMode.set(false); 
-        this.notification.set({ message: '', type: null });
+        this.isEditMode.set(false);
+        this.mainService.notification.set({ message: '', type: null });
     }
 
     toggleEditMode(): void {
         const currentlyEditing = this.isEditMode();
         if (currentlyEditing) {
-            this.profile = { ...this.originalProfile };
+            this.profile = { ...this.originalProfile! };
         } else {
-            this.originalProfile = { ...this.profile };
+            this.originalProfile = { ...this.profile! };
         }
         this.isEditMode.set(!currentlyEditing);
     }
@@ -64,42 +74,80 @@ export class Profile implements OnInit {
     }
 
     handleDelete(): void {
-        this.showNotification('error', 'Deletion error');
-        this.closeModal();
+        this.firebaseService.deleteUser(this.profile?.id!)
+            .then(() => {
+                sessionStorage.clear();
+                this.mainService.redirect('/landing');
+            })
+            .catch(() => {
+                this.mainService.showNotification('error', 'Critical error during account deletion');
+                this.closeModal();
+            });
     }
 
     handleSaveProfile(form: NgForm): void {
-        if (form.invalid) return;
+        if (form.invalid || !this.profile) return;
 
-        console.log("Angular: Saving profile changes...", this.profile);
-        const success = Math.random() > 0.3; 
-        
-        if (success) {
-            this.originalProfile = { ...this.profile }; // Commit changes
-            this.showNotification('success', 'Profile updated successfully!');
-        } else {
-            this.profile = { ...this.originalProfile }; 
-            this.showNotification('error', 'Failed to save changes due to a server error.');
-        }
+        const updatedUser: User = {
+            ...this.profile,
+            username: form.value.displayName,
+            bio: form.value.bio
+        };
 
-        this.isEditMode.set(false);
+        this.firebaseService.editUser(updatedUser)
+            .then(() => {
+                this.profile = { ...updatedUser };
+                this.originalProfile = { ...updatedUser };
+                this.mainService.showNotification('success', 'Profile updated successfully!');
+                this.isEditMode.set(false);
+               
+            })
+            .catch(() => {
+                this.mainService.showNotification('error', 'Failed to save changes due to a server error.');
+            });
     }
 
     handlePasswordChange(form: NgForm): void {
-        if (form.invalid || form.value.newPassword !== form.value.confirmPassword) {
-            this.showNotification('error', 'Passwords do not match or fields are empty.');
+        const { currentPassword, newPassword, confirmPassword } = form.value;
+        if (form.invalid) {
+            this.mainService.showNotification('error', 'Please fill in all required fields');
             return;
         }
 
-        console.log("Angular: Changing password...");
-        this.showNotification('success', 'Password updated successfully! (Simulation)');
-        form.resetForm();
+        if (this.profile && this.verifPassword(currentPassword, newPassword, confirmPassword)) {
+            const updatedUser = { ...this.profile, password: newPassword };
+            
+            this.firebaseService.editUser(updatedUser)
+                .then(() => {
+                    this.profile = { ...updatedUser };
+                    this.originalProfile = { ...updatedUser };
+                    this.mainService.showNotification('success', 'Password updated successfully');
+                    form.resetForm();
+                    
+                })
+                .catch(err => {
+                    this.mainService.showNotification('error', 'Server error: Failed to update password');
+                });
+        }
     }
 
-    showNotification(type: 'success' | 'error', message: string): void {
-        this.notification.set({ message, type });
-        setTimeout(() => {
-            this.notification.set({ message: '', type: null });
-        }, 5000);
+    
+
+    verifPassword(currentInput: string, newPass: string, confirmPass: string): boolean {
+        if (this.profile?.password !== currentInput) {
+            this.mainService.showNotification('error', 'Wrong Current Password');
+            return false;
+        }
+        if (newPass.length < 6 || !/[A-Z]/.test(newPass)) {
+            this.mainService.showNotification('error', 'Password must be at least 6 characters with 1 uppercase letter');
+            return false;
+        }
+        if (newPass !== confirmPass) {
+            this.mainService.showNotification('error', 'New passwords do not match');
+            return false;
+        }
+        return true;
     }
 }
+    
+

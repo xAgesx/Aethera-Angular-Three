@@ -1,5 +1,30 @@
+<!-- Notification Popup -->
 
-<div id="delete-modal" class="modal-backdrop active" *ngIf="isModalOpen()">
+<div class="notification-container" *ngIf="mainService.notification().type" [class.show]="mainService.notification().type">
+    <div class="notification-popup" [ngClass]="mainService.notification().type">
+        <div class="notification-icon">
+            <svg *ngIf="mainService.notification().type === 'success'" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <svg *ngIf="mainService.notification().type === 'error'" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+        </div>
+        <div class="notification-content">
+            <p class="notification-message">{{ mainService.notification().message }}</p>
+        </div>
+        <button class="notification-close">&times;</button>
+        <div class="notification-progress"></div>
+    </div>
+</div>
+
+<!-- Deletion Confirmation Modal -->
+
+<div id="delete-modal" class="modal-backdrop" [class.active]="isModalOpen()" *ngIf="isModalOpen()">
     <div class="modal-card">
         <h3 class="modal-title">Confirm Deletion</h3>
         <p class="modal-message">Are you absolutely sure you want to permanently delete your account? This action cannot
@@ -11,139 +36,153 @@
     </div>
 </div>
 
+<!-- Tab Navigation -->
 
-    <div class="tab-nav">
-        <button class="tab-button" [class.active]="activeTab() === 'info'" (click)="showTab('info')">
-            Account Info
-        </button>
-        <button class="tab-button color-text-muted" [class.active]="activeTab() === 'security'"
-            (click)="showTab('security')">
-            Security
-        </button>
-        <button class="tab-button color-text-muted" [class.active]="activeTab() === 'avatar'"
-            (click)="showTab('avatar')">
-            Avatar
-        </button>
-    </div>
+<div class="tab-nav">
+    <button class="tab-button" [class.active]="activeTab() === 'info'" (click)="showTab('info')">
+        Account Info
+    </button>
+    <button class="tab-button color-text-muted" [class.active]="activeTab() === 'security'"
+        (click)="showTab('security')">
+        Security
+    </button>
+    <button class="tab-button color-text-muted" [class.active]="activeTab() === 'avatar'" (click)="showTab('avatar')">
+        Avatar
+    </button>
+</div>
 
-    <div id="tab-contents">
+<!-- Main Tab Content Area -->
 
-        <div id="info-content" class="tab-content" *ngIf="activeTab() === 'info'">
-            <div id="view-mode" *ngIf="!isEditMode()">
-                <div class="profile-header">
-                    <div class="avatar">{{profile?.username!.split('')[0].toUpperCase()}}</div>
-                    <div>
-                        <h2 class="profile-name">{{ profile?.username }}</h2>
-                        <p class="color-text-muted">{{ profile?.email }}</p>
-                    </div>
+<div id="tab-contents">
+
+    <!-- Account Info Tab -->
+    <div id="info-content" class="tab-content" *ngIf="activeTab() === 'info'">
+
+        <!-- View Mode -->
+        <div id="view-mode" *ngIf="!isEditMode()">
+            <div class="profile-header">
+                <div class="avatar">
+                    {{ profile?.username ? profile!.username!.split('')[0].toUpperCase() : '?' }}
                 </div>
-                <div class="info-grid">
-                    <div>
-                        <label class="info-label">Display Name</label>
-                        <div class="info-display">{{ profile?.username }}</div>
-                    </div>
-                    <div>
-                        <label class="info-label">Role</label>
-                        <div class="info-display">{{profile?.role}}</div>
-                    </div>
-                    <div class="col-span-full">
-                        <label class="info-label">Bio</label>
-                        <div class="info-display info-bio">{{ profile?.bio }}</div>
-                    </div>
-                </div>
-
-                <div style="display: flex; justify-content: flex-end;">
-                    <button class="btn-edit" (click)="toggleEditMode()">Edit Profile</button>
+                <div>
+                    <h2 class="profile-name">{{ profile?.username }}</h2>
+                    <p class="color-text-muted">{{ profile?.email }}</p>
                 </div>
             </div>
 
-            <div id="edit-mode" *ngIf="isEditMode()">
-                <form #editForm="ngForm" (ngSubmit)="handleSaveProfile(editForm)">
-                    <div class="form-grid">
-                        <div class="col-span-full">
-                            <label for="display-name" class="form-label">Display Name</label>
-                            <input type="text" id="display-name" name="displayName" 
-                                class="form-input" required>
-                        </div>
+            <div class="info-grid">
+                <div>
+                    <label class="info-label">Display Name</label>
+                    <div class="info-display">{{ profile?.username }}</div>
+                </div>
+                <div>
+                    <label class="info-label">Role</label>
+                    <div class="info-display">{{ profile?.role || 'User' }}</div>
+                </div>
+                <div class="col-span-full">
+                    <label class="info-label">Bio</label>
+                    <div class="info-display info-bio">{{ profile?.bio || 'No bio provided.' }}</div>
+                </div>
+            </div>
 
-                        <div class="col-span-full">
-                            <label for="bio" class="form-label">Bio</label>
-                            <textarea id="bio" rows="4" name="bio"  class="form-textarea"
-                                placeholder="Tell us about yourself..."></textarea>
-                        </div>
-                        <div class="col-span-full form-readonly">
-                            <label for="email-readonly" class="form-label">Email Address (Read-Only)</label>
-                            <input type="email" id="email-readonly"  class="form-input"
-                                disabled>
-                        </div>
-                    </div>
-                    <div style="display: flex; justify-content: flex-end; column-gap: 1rem; margin-top: 2rem;">
-                        <button type="button" class="btn-cancel" (click)="toggleEditMode()">Cancel</button>
-                        <button type="submit" class="btn-edit" [disabled]="editForm.invalid">Save Changes</button>
-                    </div>
-                </form>
+            <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+                <button class="btn-edit" (click)="toggleEditMode()">Edit Profile</button>
             </div>
         </div>
 
-        
-        <div id="security-content" class="tab-content" *ngIf="activeTab() === 'security'">
-            <h3 class="security-header">Password Management</h3>
-            <form #passwordForm="ngForm" (ngSubmit)="handlePasswordChange(passwordForm)">
-                <div class="security-form-group">
-                    <div>
-                        <label for="current-password" class="form-label">Current Password</label>
-                        <input type="password" id="current-password" name="currentPassword"  class="form-input"
-                            required placeholder="••••••••">
+        <!-- Edit Mode -->
+        <div id="edit-mode" *ngIf="isEditMode()">
+            <form #editForm="ngForm" (ngSubmit)="handleSaveProfile(editForm)">
+                <div class="form-grid">
+                    <div class="col-span-full">
+                        <label for="display-name" class="form-label">Display Name</label>
+                        <input type="text" id="display-name" name="displayName" [ngModel]="profile?.username"
+                            class="form-input" required>
                     </div>
-                    <div>
-                        <label for="new-password" class="form-label">New Password</label>
-                        <input type="password" id="new-password" name="newPassword"  class="form-input" required
-                            placeholder="••••••••">
+
+                    <div class="col-span-full">
+                        <label for="bio" class="form-label">Bio</label>
+                        <textarea id="bio" name="bio" rows="4" [ngModel]="profile?.bio" class="form-textarea"
+                            placeholder="Tell us about yourself..."></textarea>
                     </div>
-                    <div>
-                        <label for="confirm-password" class="form-label">Confirm New Password</label>
-                        <input type="password" id="confirm-password" name="confirmPassword"  class="form-input"
-                            required placeholder="••••••••">
+
+                    <div class="col-span-full form-readonly">
+                        <label class="form-label">Email Address (Read-Only)</label>
+                        <input type="email" class="form-input" disabled [value]="profile?.email">
                     </div>
                 </div>
-                <div style="display: flex; justify-content: flex-end;">
-                    <button type="submit" class="btn-update-password" [disabled]="passwordForm.invalid">Update
-                        Password</button>
+
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+                    <button type="button" class="btn-cancel" (click)="toggleEditMode()">Cancel</button>
+                    <button type="submit" class="btn-edit" [disabled]="editForm.invalid">Save Changes</button>
                 </div>
             </form>
-
-            <div class="deletion-section">
-                <h3 class="deletion-title">Account Deletion</h3>
-                <p class="color-text-muted deletion-p">This action is irreversible. All associated data will be
-                    permanently wiped from our servers. Please proceed with caution.</p>
-                <button class="btn-delete" (click)="openModal()">Delete Account</button>
-            </div>
         </div>
-                
-        <div id="avatar-content" class="tab-content" *ngIf="activeTab() === 'avatar'">
-            <h3 class="security-header">Profile Picture</h3>
-
-            <div class="avatar-content-box">
-                <div class="avatar-preview-large">{{profile?.username!.split('')[0].toUpperCase()}}</div>
-
-                <p class="color-text-muted avatar-info">Max file size 5MB. Accepts JPG, PNG, GIF.</p>
-
-                <input type="file" id="avatar-file-input" style="display: none;" accept="image/*">
-
-                <div class="avatar-button-group">
-                    <label for="avatar-file-input" class="btn-choose-file">
-                        Choose File
-                    </label>
-                    <button class="btn-remove-avatar"
-                        (click)="showNotification('error', 'Avatar removal is not yet implemented.')">
-                        Remove
-                    </button>
-                </div>
-                <button class="btn-upload-save"
-                    (click)="showNotification('success', 'Avatar upload process simulated successfully.')">Upload & Save</button>
-            </div>
-        </div>
-        
-
     </div>
 
+    <!-- Security Tab -->
+    <div id="security-content" class="tab-content" *ngIf="activeTab() === 'security'">
+        <h3 class="security-header">Password Management</h3>
+        <form #passwordForm="ngForm" (ngSubmit)="handlePasswordChange(passwordForm)">
+            <div class="security-form-group">
+                <div>
+                    <label for="current-password" class="form-label">Current Password</label>
+                    <input type="password" id="current-password" name="currentPassword" ngModel class="form-input"
+                        required placeholder="••••••••">
+                </div>
+                <div>
+                    <label for="new-password" class="form-label">New Password</label>
+                    <input type="password" id="new-password" name="newPassword" ngModel class="form-input" required
+                        placeholder="••••••••">
+                </div>
+                <div>
+                    <label for="confirm-password" class="form-label">Confirm New Password</label>
+                    <input type="password" id="confirm-password" name="confirmPassword" ngModel class="form-input"
+                        required placeholder="••••••••">
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+                <button type="submit" class="btn-update-password" [disabled]="passwordForm.invalid">
+                    Update Password
+                </button>
+            </div>
+        </form>
+
+        <div class="deletion-section">
+            <h3 class="deletion-title">Account Deletion</h3>
+            <p class="color-text-muted deletion-p">
+                This action is irreversible. All associated data will be permanently wiped from our servers. Please
+                proceed with caution.
+            </p>
+            <button class="btn-delete" (click)="openModal()">Delete Account</button>
+        </div>
+    </div>
+
+    <!-- Avatar Tab -->
+    <div id="avatar-content" class="tab-content" *ngIf="activeTab() === 'avatar'">
+        <h3 class="security-header">Profile Picture</h3>
+        <div class="avatar-content-box">
+            <div class="avatar-preview-large">
+                {{ profile?.username ? profile!.username!.split('')[0].toUpperCase() : '?' }}
+            </div>
+
+            <p class="color-text-muted avatar-info">Max file size 5MB. Accepts JPG, PNG, GIF.</p>
+
+            <input type="file" id="avatar-file-input" style="display: none;" accept="image/*">
+
+            <div class="avatar-button-group">
+                <label for="avatar-file-input" class="btn-choose-file">Choose File</label>
+                <button class="btn-remove-avatar"
+                    (click)="this.mainService.showNotification('error', 'Avatar removal is not yet implemented.')">
+                    Remove
+                </button>
+            </div>
+            <button class="btn-upload-save"
+                (click)="this.mainService.showNotification('success', 'Avatar upload process simulated successfully.')">
+                Upload & Save
+            </button>
+        </div>
+    </div>
+
+
+</div>

@@ -42,7 +42,7 @@
     <p><strong>{{loggedUser}}</strong></p>
     <p class="email">{{loggedEmail}}</p>
     <hr />
-    <button (click)="redirect('/profile/1')">
+    <button (click)="redirect('/profile/1');toggleProfileDropdown();">
       <i class="fas fa-user"></i> View Profile
     </button>
     <button (click)="logout()">
