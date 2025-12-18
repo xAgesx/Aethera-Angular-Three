@@ -3,6 +3,19 @@
   margin: 0;
   padding: 0;
 }
+.avatar {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 9999px;
+    background-image: linear-gradient(to bottom right, #00e676, #1de9b6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #01210f;
+    font-size: 1.875rem;
+    font-weight: 700;
+    box-shadow: 0 0 0 4px #005c2e;
+}
 
 .notification-container {
     position: fixed;

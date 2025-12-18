@@ -4,7 +4,7 @@
   <aside [class.collapsed]="isCollapsed" class="sidebar">
     <div class="logo">
       <img src="assets/aethera-logo.png" alt="Aethera Logo" />
-      <span *ngIf="!isCollapsed" class="logo-text" (click)="redirect('/landing')" >Aethera</span>
+      <span *ngIf="!isCollapsed" class="logo-text" (click)="redirect('/landing')">Aethera</span>
     </div>
 
     <nav class="nav-links">
@@ -25,11 +25,22 @@
     </nav>
 
     <div class="sidebar-footer">
+      <!-- Avatar Picture -->
       <div class="profile" (click)="toggleProfileDropdown()">
-        <img src="img" alt="User Avatar" />
+        <div *ngIf="tempAvatarView()" class="avatar-setting"
+          [style.background-image]="'url(' + tempAvatarView() + ')'" >
+        </div>
+        <div class="avatar" style="width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          border: 1px solid rgba(0, 230, 118, 0.4);
+          " *ngIf="!tempAvatarView()">
+          {{ loggedEmail ? loggedEmail.split('')[0].toUpperCase() : '?' }}
+        </div>
+
         <div *ngIf="!isCollapsed" class="profile-info">
           <span class="name">{{loggedUser}}</span>
-          <small>Student</small>
+          <small>{{role}}</small>
         </div>
       </div>
       <button class="collapse-btn" (click)="toggleSidebar()">
@@ -54,19 +65,19 @@
     <i class="fas" [ngClass]="isCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'"></i>
   </button>
 
-<!-- Main content -->
-<div class="main-content">
-  <header class="topbar">
-    <h1>Aethera Platform</h1>
-    <div class="top-actions">
-      <input type="text" placeholder="Search..." />
-      <button><i class="fas fa-bell"></i></button>
-      <button><i class="fas fa-sign-out-alt"></i></button>
-    </div>
-  </header>
+  <!-- Main content -->
+  <div class="main-content">
+    <header class="topbar">
+      <h1>Aethera Platform</h1>
+      <div class="top-actions">
+        <input type="text" placeholder="Search..." />
+        <button><i class="fas fa-bell"></i></button>
+        <button><i class="fas fa-sign-out-alt"></i></button>
+      </div>
+    </header>
 
-  <section class="page-content">
-    <router-outlet></router-outlet>
-  </section>
-</div>
+    <section class="page-content">
+      <router-outlet></router-outlet>
+    </section>
+  </div>
 </div>

@@ -15,12 +15,13 @@ export class Profile implements OnInit {
     activeTab = signal<'info' | 'security' | 'avatar'>('info');
     isEditMode = signal(false);
     isModalOpen = signal(false);
-  
+
     profile: User | null = null;
     private originalProfile: User | null = null;
+    
 
     constructor(
-        public mainService: MainService, 
+        public mainService: MainService,
         private firebaseService: FirebaseService,
 
     ) { }
@@ -30,6 +31,9 @@ export class Profile implements OnInit {
         if (!sessionEmail) {
             this.mainService.redirect('/landing');
             return;
+        }
+        if (this.profile?.profilePic) {
+            this.firebaseService.tempAvatarPreview.set(this.profile.profilePic);
         }
 
         if (this.firebaseService.connectedUser && this.firebaseService.connectedUser.email === sessionEmail) {
@@ -46,7 +50,8 @@ export class Profile implements OnInit {
     private setProfileData(user: User): void {
         this.profile = { ...user };
         this.originalProfile = { ...user };
-        
+        this.firebaseService.tempAvatarPreview.set(user.profilePic!);
+
     }
 
     showTab(tab: 'info' | 'security' | 'avatar'): void {
@@ -100,7 +105,7 @@ export class Profile implements OnInit {
                 this.originalProfile = { ...updatedUser };
                 this.mainService.showNotification('success', 'Profile updated successfully!');
                 this.isEditMode.set(false);
-               
+
             })
             .catch(() => {
                 this.mainService.showNotification('error', 'Failed to save changes due to a server error.');
@@ -116,14 +121,14 @@ export class Profile implements OnInit {
 
         if (this.profile && this.verifPassword(currentPassword, newPassword, confirmPassword)) {
             const updatedUser = { ...this.profile, password: newPassword };
-            
+
             this.firebaseService.editUser(updatedUser)
                 .then(() => {
                     this.profile = { ...updatedUser };
                     this.originalProfile = { ...updatedUser };
                     this.mainService.showNotification('success', 'Password updated successfully');
                     form.resetForm();
-                    
+
                 })
                 .catch(err => {
                     this.mainService.showNotification('error', 'Server error: Failed to update password');
@@ -131,7 +136,7 @@ export class Profile implements OnInit {
         }
     }
 
-    
+
 
     verifPassword(currentInput: string, newPass: string, confirmPass: string): boolean {
         if (this.profile?.password !== currentInput) {
@@ -148,6 +153,59 @@ export class Profile implements OnInit {
         }
         return true;
     }
+    handleAvatarUpload(): void {
+        if (!this.profile || !this.firebaseService.tempAvatarPreview()) {
+            this.mainService.showNotification('error', 'No image selected to upload.');
+            return;
+        }
+
+        const updatedUser: User = {
+            ...this.profile,
+            profilePic: this.firebaseService.tempAvatarPreview() as string
+        };
+
+        this.firebaseService.editUser(updatedUser)
+            .then(() => {
+                this.profile = updatedUser;
+                this.firebaseService.connectedUser = updatedUser;
+                this.mainService.showNotification('success', 'Profile picture updated successfully!');
+            })
+            .catch(err => {
+                console.error(err);
+                this.mainService.showNotification('error', 'Failed to upload image to server.');
+            });
+    }
+    removeAvatar(): void {
+        if (!this.profile) return;
+
+        const updatedUser: User = { ...this.profile, profilePic: '' };
+        this.firebaseService.editUser(updatedUser).then(() => {
+            this.profile = updatedUser;
+            this.firebaseService.connectedUser = updatedUser;
+            this.firebaseService.tempAvatarPreview.set(null);
+            this.mainService.showNotification('success', 'Avatar removed.');
+        });
+    }
+    onFileSelected(event: any): void {
+        const file: File = event.target.files[0];
+        console.log('Processing Picture');
+        if (!file) return;
+
+        if (file.size > 5 * 1024 * 1024) {
+            this.mainService.showNotification('error', 'File is too large! Max 5MB');
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = () => {
+            const base64String = reader.result as string;
+            this.firebaseService.tempAvatarPreview.set(base64String);
+        };
+        reader.readAsDataURL(file);
+    }
+    tempAvatarView(){
+        return this.firebaseService.tempAvatarPreview();
+    }
 }
-    
+
 

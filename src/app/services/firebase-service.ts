@@ -1,4 +1,4 @@
-import { AfterViewInit, Injectable, OnInit } from '@angular/core';
+import { AfterViewInit, Injectable, OnInit, signal } from '@angular/core';
 import { consumerPollProducersForChange } from '@angular/core/primitives/signals';
 import { addDoc, collection, collectionData, Firestore, getDocs, query, where } from '@angular/fire/firestore';
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
@@ -10,7 +10,8 @@ export interface User{
   password ?: string,
   username ?:string,
   role ?: string,
-  bio ?: string
+  bio ?: string,
+  profilePic?:string
 }
 @Injectable({
   providedIn: 'root',
@@ -19,6 +20,7 @@ export class FirebaseService {
   test?:string;
   collectionName = 'AetheraUsers';
 connectedUser: User | null = null;
+tempAvatarPreview = signal<string | null>(null);
 
   constructor(private firestore : Firestore){
     let sessionsEmail = sessionStorage.getItem('email');
@@ -26,7 +28,7 @@ connectedUser: User | null = null;
       this.getUserByEmail(sessionsEmail).subscribe(data => {
         this.connectedUser = data[0];
         console.log('connectedUser',this.connectedUser);
-
+        this.tempAvatarPreview.set(data[0].profilePic);
       this.test=data[0];
     });
     console.log('constructor');

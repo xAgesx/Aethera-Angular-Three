@@ -174,6 +174,7 @@ export class Auth {
         this.mainService.showNotification('error', 'Wrong Credentials');
       }
     }
+
   }
 
   addUser(user: User) {

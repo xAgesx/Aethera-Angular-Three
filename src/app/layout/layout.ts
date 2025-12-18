@@ -4,6 +4,7 @@ import { RouterOutlet } from "@angular/router";
 import { MainService } from '../services/main-service';
 import { User } from 'firebase/auth';
 import { Observable } from 'rxjs';
+import { FirebaseService } from '../services/firebase-service';
 
 @Component({
   selector: 'app-layout',
@@ -17,18 +18,17 @@ export class Layout {
   showProfileDropdown = false;
   loggedUser?: string;
   loggedEmail?: string;
+  role?:string = 'Member';
+  userAvatar ?: any;
 
-
-  constructor(private mainService: MainService) { }
+  constructor(private mainService: MainService, private firebaseService:FirebaseService) { }
   toggleSidebar() {
     this.isCollapsed = !this.isCollapsed;
   }
   ngOnInit() {
 
     this.loggedEmail = sessionStorage.getItem('email') ?? undefined;
-    if (this.loggedEmail) {
-      this.loggedUser = this.loggedEmail?.split('@', 1)[0];
-    }
+    this.getUsername();
   }
 
   toggleProfileDropdown() {
@@ -40,6 +40,17 @@ export class Layout {
   }
   redirect(path: string) {
     this.mainService.redirect(path);
+  }
+  tempAvatarView(){
+        return this.firebaseService.tempAvatarPreview();
+    }
+
+  getUsername(){
+    if (this.loggedEmail) {
+    this.firebaseService.getUserByEmail(this.loggedEmail).subscribe((data)=>{
+      this.loggedUser = data[0].username;
+      });
+    }
   }
 }
 

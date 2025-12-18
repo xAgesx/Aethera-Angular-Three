@@ -17,9 +17,11 @@
 .color-text-muted {
     color: #b8ffce;
 }
+
 .color-accent-dark-border {
     border-color: #005c2e;
 }
+
 .color-accent-green {
     color: #00e676;
 }
@@ -27,9 +29,11 @@
 .color-red {
     color: #f87171;
 }
+
 .color-bg-red {
     background-color: #dc2626;
 }
+
 .color-bg-red-hover {
     background-color: #b91c1c;
 }
@@ -197,19 +201,6 @@ body {
     border: 1px solid rgba(0, 92, 46, 0.5);
 }
 
-.avatar {
-    width: 5rem;
-    height: 5rem;
-    border-radius: 9999px;
-    background-image: linear-gradient(to bottom right, #00e676, #1de9b6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #01210f;
-    font-size: 1.875rem;
-    font-weight: 700;
-    box-shadow: 0 0 0 4px #005c2e;
-}
 
 .profile-name {
     font-size: 1.5rem;
@@ -464,6 +455,12 @@ body {
     font-weight: 700;
     box-shadow: 0 0 0 4px #005c2e;
     margin-bottom: 1rem;
+}
+
+.avatar-setting {
+    background-size: cover;
+    background-position: center;
+    border: 2px solid #00e676;
 }
 
 .avatar-info {
