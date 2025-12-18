@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FirebaseService, User } from '../services/firebase-service';
 import { MainService } from '../services/main-service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-auth',
@@ -64,53 +65,33 @@ export class Auth {
   }
 
   onSubmit(authForm: NgForm) {
-
     if (authForm.invalid) {
-      console.log('Form is invalid (reCAPTCHA not checked or fields empty).');
       return;
     }
 
     const backendUrl = 'http://localhost/Backend/verify_recaptcha.php';
 
-    //Handle ReCaptcha
     this.http.post(backendUrl, { recaptcha: authForm.value.recaptcha })
       .subscribe({
         next: (response: any) => {
-          console.log('Backend Response:', response);
           if (response.success) {
-            console.log('reCAPTCHA verified and login/signup successful!');
-
+            if (!this.verifForm(authForm)) {
+              return;
+            }
+            // Use take(1) so the subscription doesn't fire again after addUser updates the collection
+            this.firebaseService.getUserByEmail(authForm.value.email).pipe(take(1)).subscribe(data => {
+              this.firebaseService.connectedUser = data[0] as User;
+              if (this.isLogin) {
+                this.login(data, authForm);
+              } else {
+                this.signup(data, authForm);
+              }
+            });
           } else {
-            console.error('Authentication failed:', response.message);
-            this.mainService.showNotification('error', "ReCAPTCHA Verification Failed");;
-
+            this.mainService.showNotification('error', "ReCAPTCHA Verification Failed");
           }
-        },
-        error: (error) => {
-          console.error('Network or Server Error:', error);
         }
       });
-
-    if (!this.verifForm(authForm)) {
-      return;
-    }
-    this.firebaseService.getUserByEmail(authForm.value.email).subscribe(data => {
-      console.log('data : ', data);
-      this.firebaseService.connectedUser = data[0] as User;
-      console.log('ConnectedUser ', this.firebaseService.connectedUser);
-
-      // Login 
-      if (this.isLogin) {
-        this.login(data, authForm);
-      }
-      // Signup
-      else {
-        this.signup(data, authForm);
-      }
-
-    });;
-
-
   }
   public verifForm(authForm: any) {
     let email = authForm.value.email;
@@ -158,8 +139,11 @@ export class Auth {
       sessionStorage.setItem('email', authForm.value.email);
       this.mainService.showNotification('success', 'You are in ! Welcome to the community');
       this.redirectWithDelay('/browse', 2000);
+      console.log("Success registering");
     } else {
       this.mainService.showNotification('error', "User Already Registered");
+      console.log("Failure Registering");
+
     }
   }
   login(data: any, authForm: any) {
