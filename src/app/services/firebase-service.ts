@@ -1,6 +1,5 @@
-import { AfterViewInit, Injectable, OnInit, signal } from '@angular/core';
-import { consumerPollProducersForChange } from '@angular/core/primitives/signals';
-import { addDoc, collection, collectionData, Firestore, getDocs, query, where } from '@angular/fire/firestore';
+import { Injectable, signal } from '@angular/core';
+import { addDoc, collection, collectionData, Firestore, query, where } from '@angular/fire/firestore';
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { Observable } from 'rxjs';
 

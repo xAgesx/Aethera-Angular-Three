@@ -5,6 +5,8 @@ import { Auth } from './auth/auth';
 import { Layout } from './layout/layout';
 import { Browse } from './browse/browse';
 import { Profile } from './profile/profile';
+import { Dashboard } from './dashboard/dashboard';
+
 
 
 
@@ -17,7 +19,8 @@ export const routes: Routes = [
         children: [
             { path: 'browse', component: Browse },
             { path: 'details/:id', component: GameDetails },
-            { path : 'profile/:id',component:Profile}
+            { path : 'profile/:id',component:Profile},
+            { path : 'dashboard',component:Dashboard}
         ]
     }
 

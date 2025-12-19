@@ -20,20 +20,26 @@
         </span>
       </div>
     </div>
-    <button class="like-btn">Like</button>
-
-    <button class="launch-button" (click)="launchGame()">
-      <i class="fas fa-play"></i> Play Now
-    </button>
+    
+    <div class="actions">
+       <button class="like-btn" [class.liked]="game.liked" (click)="toggleLike()">
+         <i class="fas fa-heart"></i> {{ game.liked ? 'Liked' : 'Like' }}
+       </button>
+       <button class="launch-button">
+         <i class="fas fa-play"></i> Play Now
+       </button>
+    </div>
   </header>
-
 
   <div class="main-grid">
     <div class="main-content">
+      <!-- Media Carousel -->
       <div class="media-carousel" *ngIf="game.images && game.images.length > 0">
-        <img *ngFor="let img of game.images; let i = index" [src]="img" [alt]="game.title + ' screenshot ' + (i + 1)"
-          class="carousel-item" [style.opacity]="i === currentSlide ? '1' : '0'" />
-
+        <img *ngFor="let img of game.images; let i = index" 
+             [src]="img" 
+             [class.active]="i === currentSlide"
+             class="carousel-img">
+        
         <button class="carousel-arrow left" (click)="changeSlide(-1)">
           <i class="fas fa-chevron-left"></i>
         </button>
@@ -42,12 +48,81 @@
         </button>
       </div>
 
+      <!-- Overview -->
       <div class="card overview-card">
         <h2>Overview</h2>
         <p>{{ game.longDescription || 'No additional details available.' }}</p>
       </div>
-    </div>
 
+      <!-- Reviews Section -->
+      <div class="card reviews-section">
+        <h2>Community Reviews</h2>
+        
+        <!-- Add Review Form -->
+        <div class="add-review" *ngIf="firebaseService.connectedUser">
+          <div class="user-meta">
+             <img [src]="firebaseService.connectedUser.profilePic || 'https://api.dicebear.com/7.x/avataaars/svg?seed=fallback'" class="mini-avatar">
+             <span>Reviewing as <strong>{{ firebaseService.connectedUser.username }}</strong></span>
+          </div>
+          <div class="rating-input">
+            <label>Rating:</label>
+            <select [(ngModel)]="rating">
+              <option [value]="5">5 - Excellent</option>
+              <option [value]="4">4 - Great</option>
+              <option [value]="3">3 - Good</option>
+              <option [value]="2">2 - Fair</option>
+              <option [value]="1">1 - Poor</option>
+            </select>
+          </div>
+          <textarea [(ngModel)]="newReviewContent" placeholder="Write your thoughts about the game..."></textarea>
+          <button (click)="submitReview()" [disabled]="!newReviewContent.trim()">Post Review</button>
+        </div>
+
+        <!-- Review List -->
+        <div class="reviews-list">
+          <div *ngFor="let rev of reviews$ | async" class="review-item">
+            <div class="review-header">
+              <div class="user-info">
+                <img [src]="rev.photoURL || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + rev.username" class="review-avatar">
+                <span class="user">{{ rev.username }}</span>
+              </div>
+              <div class="header-right">
+                <span class="stars">{{ rev.rating }} ★</span>
+                <div class="action-btns" *ngIf="rev.userEmail === firebaseService.connectedUser?.email">
+                  <button (click)="startEdit(rev)" class="edit-btn"><i class="fas fa-edit"></i>Edit</button>
+                  <button (click)="deleteReview(rev.id!)" class="del-btn"><i class="fas fa-trash"></i>Delete</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Content / Edit Mode -->
+            <div class="review-body">
+              <div *ngIf="editingReviewId === rev.id; else viewMode">
+                <textarea [(ngModel)]="editContent" class="edit-area"></textarea>
+                <div class="edit-actions">
+                  <button (click)="saveEdit(rev.id!)" class="save-btn">Save</button>
+                  <button (click)="cancelEdit()" class="cancel-btn">Cancel</button>
+                </div>
+              </div>
+              <ng-template #viewMode>
+                <p class="content">{{ rev.content }}</p>
+              </ng-template>
+            </div>
+
+            <div class="review-footer">
+              <span class="date">{{ rev.createdAt | date:'mediumDate' }}</span>
+              <button class="upvote-btn" (click)="toggleUpvote(rev)" [class.voted]="rev.upvotes?.includes(firebaseService.connectedUser?.email || '')">
+                <i class="fas fa-thumbs-up"></i> {{ rev.upvotes?.length || 0 }}
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="(reviews$ | async)?.length === 0" class="no-reviews">
+            No reviews yet. Be the first to share your experience!
+          </div>
+        </div>
+      </div>
+    </div>
 
     <aside class="sidebar-content">
       <div class="card tags-card" *ngIf="game.tags.length">
@@ -56,7 +131,8 @@
           <span *ngFor="let tag of game.tags" class="tag">{{ tag }}</span>
         </div>
       </div>
-      <div class="card">
+
+      <div class="card info-card">
         <h2>Game Info</h2>
         <ul class="info-list">
           <li><span>Release:</span> <span>{{ game.release || 'N/A' }}</span></li>
@@ -65,15 +141,14 @@
           <li><span>Complexity:</span> <span>{{ game.complexity || 'N/A' }}</span></li>
         </ul>
       </div>
+
       <div class="card community-score" *ngIf="game.topScore">
         <h2>Top Score</h2>
         <div class="score-display">
-          <p class="score">{{ game.topScore }}</p>
-          <p>Held by <strong>{{ game.topPlayer || 'Anonymous' }}</strong></p>
+           <span class="points">{{ game.topScore }}</span>
+           <span class="player">by {{ game.topPlayer || 'Elite User' }}</span>
         </div>
       </div>
-
-
     </aside>
   </div>
 </div>
