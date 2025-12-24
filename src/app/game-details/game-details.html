@@ -1,3 +1,31 @@
+
+<!-- Notification Area -->
+
+<div class="notification-container" *ngIf="mainService.notification().type"
+  [class.show]="mainService.notification().type">
+  <div class="notification-popup" [ngClass]="mainService.notification().type">
+    <div class="notification-icon">
+      <svg *ngIf="mainService.notification().type === 'success'" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <svg *ngIf="mainService.notification().type === 'error'" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="15" y1="9" x2="9" y2="15"></line>
+        <line x1="9" y1="9" x2="15" y2="15"></line>
+      </svg>
+    </div>
+    <div class="notification-content">
+      <p class="notification-message">{{ mainService.notification().message }}</p>
+    </div>
+    <button class="notification-close"
+      (click)="mainService.notification.set({message: '', type: null})">&times;</button>
+    <div class="notification-progress"></div>
+  </div>
+</div>
+
+
 <div class="details-container" *ngIf="game">
   <!-- Back Button -->
   <button class="back-button" (click)="goBack()">
@@ -20,14 +48,14 @@
         </span>
       </div>
     </div>
-    
+
     <div class="actions">
-       <button class="like-btn" [class.liked]="game.liked" (click)="toggleLike()">
-         <i class="fas fa-heart"></i> {{ game.liked ? 'Liked' : 'Like' }}
-       </button>
-       <button class="launch-button">
-         <i class="fas fa-play"></i> Play Now
-       </button>
+      <button class="like-btn" [class.liked]="game.liked" (click)="toggleLike()">
+        <i class="fas fa-heart"></i> {{ game.liked ? 'Liked' : 'Like' }}
+      </button>
+      <button class="launch-button">
+        <i class="fas fa-play"></i> Play Now
+      </button>
     </div>
   </header>
 
@@ -35,11 +63,9 @@
     <div class="main-content">
       <!-- Media Carousel -->
       <div class="media-carousel" *ngIf="game.images && game.images.length > 0">
-        <img *ngFor="let img of game.images; let i = index" 
-             [src]="img" 
-             [class.active]="i === currentSlide"
-             class="carousel-img">
-        
+        <img *ngFor="let img of game.images; let i = index" [src]="img" [class.active]="i === currentSlide"
+          class="carousel-img">
+
         <button class="carousel-arrow left" (click)="changeSlide(-1)">
           <i class="fas fa-chevron-left"></i>
         </button>
@@ -57,16 +83,17 @@
       <!-- Reviews Section -->
       <div class="card reviews-section">
         <h2>Community Reviews</h2>
-        
-        <!-- Add Review Form -->
+
         <div class="add-review" *ngIf="firebaseService.connectedUser">
           <div class="user-meta">
-             <img [src]="firebaseService.connectedUser.profilePic || 'https://api.dicebear.com/7.x/avataaars/svg?seed=fallback'" class="mini-avatar">
-             <span>Reviewing as <strong>{{ firebaseService.connectedUser.username }}</strong></span>
+            <img
+              [src]="firebaseService.connectedUser.profilePic || 'https://api.dicebear.com/7.x/avataaars/svg?seed=fallback'"
+              class="mini-avatar">
+            <span>Reviewing as <strong>{{ firebaseService.connectedUser.username }}</strong></span>
           </div>
           <div class="rating-input">
-            <label>Rating:</label>
-            <select [(ngModel)]="rating">
+            <label>Rating: </label>
+            <select [(ngModel)]="rating" class="styled-select">
               <option [value]="5">5 - Excellent</option>
               <option [value]="4">4 - Great</option>
               <option [value]="3">3 - Good</option>
@@ -75,7 +102,7 @@
             </select>
           </div>
           <textarea [(ngModel)]="newReviewContent" placeholder="Write your thoughts about the game..."></textarea>
-          <button (click)="submitReview()" [disabled]="!newReviewContent.trim()">Post Review</button>
+          <button (click)="submitReview();" class="save-btn" [disabled]="!newReviewContent.trim()">Post Review</button>
         </div>
 
         <!-- Review List -->
@@ -83,7 +110,8 @@
           <div *ngFor="let rev of reviews$ | async" class="review-item">
             <div class="review-header">
               <div class="user-info">
-                <img [src]="rev.photoURL || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + rev.username" class="review-avatar">
+                <img [src]="rev.photoURL || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + rev.username"
+                  class="review-avatar">
                 <span class="user">{{ rev.username }}</span>
               </div>
               <div class="header-right">
@@ -95,7 +123,7 @@
               </div>
             </div>
 
-            <!-- Content / Edit Mode -->
+            <!-- Edit Mode -->
             <div class="review-body">
               <div *ngIf="editingReviewId === rev.id; else viewMode">
                 <textarea [(ngModel)]="editContent" class="edit-area"></textarea>
@@ -111,7 +139,8 @@
 
             <div class="review-footer">
               <span class="date">{{ rev.createdAt | date:'mediumDate' }}</span>
-              <button class="upvote-btn" (click)="toggleUpvote(rev)" [class.voted]="rev.upvotes?.includes(firebaseService.connectedUser?.email || '')">
+              <button class="upvote-btn" (click)="toggleUpvote(rev)"
+                [class.voted]="rev.upvotes?.includes(firebaseService.connectedUser?.email || '')">
                 <i class="fas fa-thumbs-up"></i> {{ rev.upvotes?.length || 0 }}
               </button>
             </div>
@@ -145,8 +174,8 @@
       <div class="card community-score" *ngIf="game.topScore">
         <h2>Top Score</h2>
         <div class="score-display">
-           <span class="points">{{ game.topScore }}</span>
-           <span class="player">by {{ game.topPlayer || 'Elite User' }}</span>
+          <span class="points">{{ game.topScore }}</span>
+          <span class="player">by {{ game.topPlayer || 'Elite User' }}</span>
         </div>
       </div>
     </aside>

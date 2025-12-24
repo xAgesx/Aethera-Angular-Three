@@ -6,16 +6,17 @@ import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { Review, ReviewsService } from '../services/reviews-service';
 import { FirebaseService } from '../services/firebase-service';
+import { MainService } from '../services/main-service';
 
 @Component({
   selector: 'app-game-details',
   standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './game-details.html',
-  styleUrls: ['./game-details.css']
+  styleUrls: ['./game-details.css'],
 })
 export class GameDetails implements OnInit {
-  // Using inject() for cleaner dependency management
+
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private gameService = inject(GameService);
@@ -31,24 +32,24 @@ export class GameDetails implements OnInit {
   // Editing State
   public editingReviewId: string | null = null;
   public editContent: string = '';
-
+  constructor(public mainService: MainService) { }
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     const foundGame = this.gameService.getGameById(id);
-    
+
     if (!foundGame) {
       this.router.navigate(['/browse']);
       return;
     }
 
     this.game = foundGame;
-    // Fetch real-time reviews from the ReviewsService
+
     this.reviews$ = this.reviewsService.getReviewsByGameId(id);
   }
 
   submitReview(): void {
     const user = this.firebaseService.connectedUser;
-    // Check if user is logged in and not just a placeholder
+
     if (!this.newReviewContent.trim() || !this.game || !user || user.email === 'null') {
       return;
     }
@@ -60,13 +61,16 @@ export class GameDetails implements OnInit {
       username: user.username || 'Aethera Explorer',
       userEmail: user.email,
       photoURL: user.profilePic || null,
-      upvotes: [] // Initialize with empty upvotes array
+      upvotes: []
     };
 
     this.reviewsService.addReview(reviewData).then(() => {
       this.newReviewContent = '';
       this.rating = 5;
     });
+    this.mainService.showNotification('success', 'Review posted successfully!');
+
+
   }
 
   // Edit Feature
@@ -85,6 +89,7 @@ export class GameDetails implements OnInit {
     this.reviewsService.updateReview(reviewId, { content: this.editContent }).then(() => {
       this.editingReviewId = null;
     });
+    this.mainService.showNotification('success', 'Review updated.');
   }
 
   // Upvote Feature
@@ -103,9 +108,9 @@ export class GameDetails implements OnInit {
   }
 
   deleteReview(id: string): void {
-    if (confirm('Are you sure you want to delete this review?')) {
-      this.reviewsService.deleteReview(id);
-    }
+
+    this.reviewsService.deleteReview(id);
+    this.mainService.showNotification('success', 'Review deleted.');
   }
 
   changeSlide(offset: number): void {

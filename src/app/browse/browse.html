@@ -12,10 +12,7 @@
         (input)="onSearchChange(searchTerm)"
       />
 
-      <select
-        class="filter-dropdown"
-        [(ngModel)]="selectedTag"
-        (change)="onTagChange(selectedTag)"
+      <select class="styled-select" [(ngModel)]="selectedTag" (change)="onTagChange(selectedTag)"
       >
         <option value="all">All Tags</option>
         <option *ngFor="let tag of tags" [value]="tag">{{ tag | titlecase }}</option>
