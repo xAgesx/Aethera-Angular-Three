@@ -63,8 +63,9 @@ export class Browse implements OnInit {
   openGameDetails(gameId: number) {
     this.router.navigate(['/details', gameId]);
   }
-  toggleLike(game: Game) {
+   toggleLike(game: Game) {
     this.gameService.toggleLike(game.id);
-    game.liked = !game.liked;
+    this.games = this.gameService.getAllGames();
+    this.applyFilters();
   }
 }

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { FirebaseService } from './firebase-service';
 
 export interface Game {
   id: number;
@@ -24,6 +25,7 @@ export interface Game {
 export class GameService {
   private games: Game[] = [];
   http = inject(HttpClient);
+  private fb = inject(FirebaseService);
 
   constructor() {
     this.http
@@ -36,9 +38,12 @@ export class GameService {
       });
   }
 
-  getAllGames(): Game[] {
-    if (!this.games) return [];
-    return [...this.games];
+   getAllGames(): Game[] {
+    const userLikes = this.fb.connectedUser?.likedGames || [];
+    return this.games.map(game => ({
+      ...game,
+      liked: userLikes.includes(game.id)
+    }));
   }
 
   getGameById(id: number): Game | undefined {
@@ -57,13 +62,12 @@ export class GameService {
     return allTags;
   }
 
-  toggleLike(id: number): void {
-    const game = this.games.find(g => g.id === id);
-    if (game) game.liked = !game.liked;
+   async toggleLike(id: number): Promise<void> {
+    await this.fb.toggleGameLike(id);
   }
 
   getLikedGames(): Game[] {
-    return this.games.filter(g => g.liked);
+    return this.getAllGames().filter(g => g.liked);
   }
 
   addGame(game: Omit<Game, 'id' | 'liked'>): Game {

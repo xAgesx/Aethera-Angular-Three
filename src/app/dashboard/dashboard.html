@@ -1,1 +1,137 @@
-<p>dashboard works!</p>
+<div class="insights-container">
+    <header class="page-header">
+        <div>
+            <h1>User Insights</h1>
+            <p>Analyzing your taste based on <strong>{{ likedGamesCount }}</strong> favorites</p>
+        </div>
+        <div class="user-badge" *ngIf="firebaseService.connectedUser">
+            <i class="fas fa-shield-halved"></i>
+            <span>{{ firebaseService.connectedUser.username || 'Gamer Profile' }}</span>
+        </div>
+    </header>
+
+    <div class="charts-grid">
+        <div class="chart-card">
+            <div class="card-info">
+                <h3>Genre Affinity</h3>
+                <p>Your most liked categories</p>
+            </div>
+            <div class="canvas-wrapper">
+                <canvas #genreChart></canvas>
+                <div *ngIf="likedGames.length === 0" class="no-data-overlay">
+                    <span>Like some games to see your stats!</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <div class="card-info">
+                <h3>Visual Preference</h3>
+                <p>Dimension distribution</p>
+            </div>
+            <div class="canvas-wrapper">
+                <canvas #dimChart></canvas>
+                <div *ngIf="likedGames.length === 0" class="no-data-overlay">
+                    <span>No preference data available</span>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Favorites Section -->
+    <div class="dashboard-section">
+        <div class="section-header">
+            <h3>Favorite Experiences</h3>
+            <button class="view-all-btn">View All Games</button>
+        </div>
+
+        <div class="activity-list">
+            <div *ngFor="let game of likedGames" class="activity-item">
+                <div class="game-info">
+                    <div class="game-icon">
+                        <img [src]="game.thumbnail" alt="thumb" class="rounded-icon">
+                    </div>
+                    <div class="game-details">
+                        <h4>{{ game.title }}</h4>
+                        <div class="game-meta">
+                            <span class="tag-badge" *ngFor="let tag of game.tags.slice(0, 2)">{{ tag }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="game-rating">
+                    <div class="stars">
+                        <i class="fas fa-star" *ngFor="let i of [1,2,3,4,5]"
+                            [style.color]="i <= (+game.rating! || 0) ? '#00ffa3' : '#333'"></i>
+                    </div>
+                    <span class="rating-value">{{ game.rating || 'N/A' }}</span>
+                </div>
+            </div>
+
+            <div *ngIf="likedGames.length === 0" class="empty-state">
+                <i class="fas fa-heart-broken"></i>
+                <p>You haven't liked any games yet.</p>
+            </div>
+        </div>
+    </div>
+    <section class="dashboard-section reviews-section">
+        <div class="section-header">
+            <h3>Your Recent Reviews</h3>
+            <div class="header-actions">
+                <span class="count-pill">{{ filteredReviews.length }} Total </span>
+                <select class="styled-select" #SelectFilter ngModel (change)="setSort(SelectFilter.value)">
+                    <option value="newest">Newest First</option>
+                    <option value="upvotes">Highest Upvotes</option>
+                    <option value="game">Game Title</option>
+                </select>
+                
+            </div>
+        </div>
+
+        <div class="reviews-list">
+            <div *ngFor="let review of filteredReviews.slice(0, reviewLimit)" class="review-item">
+                <img [src]="review.game?.thumbnail || 'assets/placeholder.png'" 
+                     class="mini-thumb" 
+                     (click)="navigateToGame(review.gameId)"
+                     alt="Game thumb">
+
+                <div class="review-body">
+                    <div class="review-meta">
+                        <div>
+                            <strong class="game-link" (click)="navigateToGame(review.gameId)">
+                                {{ review.game?.title || 'Unknown Game' }}
+                            </strong>
+                            <div class="stars">
+                                <i class="fas fa-star" *ngFor="let i of [1,2,3,4,5]" [class.active]="i <= review.rating"></i>
+                            </div>
+                        </div>
+
+                        <div class="upvote-badge" [class.has-upvotes]="review.upvoteCount > 0">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>{{ review.upvoteCount }}</span>
+                        </div>
+                    </div>
+
+                    <p class="review-text">"{{ review.content }}"</p>
+
+                    <div class="review-footer">
+                        <span class="review-date">{{ review.createdAt?.seconds * 1000 | date:'mediumDate' }}</span>
+                        <button class="text-btn" (click)="navigateToGame(review.gameId)">
+                            View Details <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="expand-container" *ngIf="filteredReviews.length > 5">
+                <button class="expand-btn" (click)="toggleExpand()">
+                    {{ isExpanded ? 'Show Less' : 'View All ' + filteredReviews.length + ' Reviews' }}
+                    <i class="fas" [class.fa-chevron-up]="isExpanded" [class.fa-chevron-down]="!isExpanded"></i>
+                </button>
+            </div>
+
+            <div *ngIf="filteredReviews.length === 0" class="empty-state">
+                <i class="fas fa-comment-slash"></i>
+                <p>You haven't written any reviews yet.</p>
+            </div>
+        </div>
+    </section>
+</div>

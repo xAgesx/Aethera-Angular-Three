@@ -79,4 +79,9 @@ export class ReviewsService {
     const reviewDoc = doc(this.firestore, this.collectionPath, reviewId);
     await deleteDoc(reviewDoc);
   }
+  getReviewsByUserEmail(email: string): Observable<any[]> {
+    const reviewsRef = collection(this.firestore, this.collectionPath);
+    const q = query(reviewsRef, where('userEmail', '==', email));
+    return collectionData(q, { idField: 'id' });
+  }
 }

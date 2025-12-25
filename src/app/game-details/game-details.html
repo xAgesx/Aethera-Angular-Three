@@ -140,8 +140,8 @@
             <div class="review-footer">
               <span class="date">{{ rev.createdAt | date:'mediumDate' }}</span>
               <button class="upvote-btn" (click)="toggleUpvote(rev)"
-                [class.voted]="rev.upvotes?.includes(firebaseService.connectedUser?.email || '')">
-                <i class="fas fa-thumbs-up"></i> {{ rev.upvotes?.length || 0 }}
+                [class.voted]="rev.upvotes!.includes(firebaseService.connectedUser?.email || '')">
+                <i class="fas fa-thumbs-up"></i> {{ rev.upvotes!.length || 0 }}
               </button>
             </div>
           </div>

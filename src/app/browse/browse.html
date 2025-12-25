@@ -4,16 +4,10 @@
     <p>Discover, play, and learn with interactive 3D experiences built with Three.js</p>
 
     <div class="browse-filters">
-      <input
-        type="text"
-        placeholder="Search games..."
-        class="search-bar"
-        [(ngModel)]="searchTerm"
-        (input)="onSearchChange(searchTerm)"
-      />
+      <input type="text" placeholder="Search games..." class="search-bar" [(ngModel)]="searchTerm"
+        (input)="onSearchChange(searchTerm)" />
 
-      <select class="styled-select" [(ngModel)]="selectedTag" (change)="onTagChange(selectedTag)"
-      >
+      <select class="styled-select" [(ngModel)]="selectedTag" (change)="onTagChange(selectedTag)">
         <option value="all">All Tags</option>
         <option *ngFor="let tag of tags" [value]="tag">{{ tag | titlecase }}</option>
       </select>
@@ -21,8 +15,8 @@
   </div>
 
   <div class="games-grid">
-    <div *ngFor="let game of filteredGames" (click)="openGameDetails(game.id)" class="game-card">
-      <div class="thumb">
+    <div *ngFor="let game of filteredGames" class="game-card">
+      <div class="thumb" (click)="openGameDetails(game.id)">
         <img [src]="game.thumbnail" [alt]="game.title" />
         <div class="thumb-overlay">
           <button class="play-btn"><i class="fas fa-play"></i></button>
@@ -38,11 +32,7 @@
         </div>
 
         <div class="actions">
-          <button
-            class="like-btn"
-            [class.liked]="game.liked"
-            (click)="toggleLike(game)"
-          >
+          <button class="like-btn" [class.liked]="game.liked" (click)="toggleLike(game)">
             <i class="fas" [ngClass]="game.liked ? 'fa-heart' : 'fa-heart-broken'"></i>
             <span>{{ game.liked ? 'Liked' : 'Like' }}</span>
           </button>

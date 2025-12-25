@@ -45,6 +45,17 @@ export class GameDetails implements OnInit {
     this.game = foundGame;
 
     this.reviews$ = this.reviewsService.getReviewsByGameId(id);
+    setTimeout(() => this.loadGameData(id), 100);
+  }
+  private loadGameData(id: number): void {
+    const foundGame = this.gameService.getGameById(id);
+    if (foundGame) {
+      const userLikes = this.firebaseService.connectedUser?.likedGames || [];
+      this.game = {
+        ...foundGame,
+        liked: userLikes.includes(id)
+      };
+    }
   }
 
   submitReview(): void {
@@ -127,6 +138,7 @@ export class GameDetails implements OnInit {
     if (this.game) {
       this.gameService.toggleLike(this.game.id);
       this.game.liked = !this.game.liked;
+
     }
   }
 }

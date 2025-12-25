@@ -10,7 +10,8 @@ export interface User{
   username ?:string,
   role ?: string,
   bio ?: string,
-  profilePic?:string
+  profilePic?:string,
+  likedGames?: number[];
 }
 @Injectable({
   providedIn: 'root',
@@ -70,6 +71,20 @@ tempAvatarPreview = signal<string | null>(null);
   deleteUser(userId: string) {
     const userDocRef = doc(this.firestore, `${this.collectionName}/${userId}`);
     return deleteDoc(userDocRef);
+  }
+  async toggleGameLike(gameId: number): Promise<void> {
+    if (!this.connectedUser || !this.connectedUser.id) return;
+
+    const currentLikes = this.connectedUser.likedGames || [];
+    const index = currentLikes.indexOf(gameId);
+    
+    if (index > -1) {
+      currentLikes.splice(index, 1);
+    } else {
+      currentLikes.push(gameId);
+    }
+
+    await this.editUser({ ...this.connectedUser, likedGames: currentLikes });
   }
 
 }
