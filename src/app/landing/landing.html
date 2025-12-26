@@ -1,13 +1,56 @@
-<!-- landing.component.html -->
 <div class="landing-container">
   <canvas #bgCanvas class="bg-canvas"></canvas>
 
-  <div class="overlay">
-    <h1 class="title">AETHERA</h1>
-    <p class="subtitle">Discover Learning in Motion</p>
-    <div class="buttons">
-      <button class="btn primary" (click)="redirect('/browse')">Explore Games</button>
-      <button class="btn secondary" (click)="redirect('auth')">Get Started</button>
+  <!-- Hero Section -->
+  <section class="scroll-section hero">
+    <div class="content-wrapper" [style.opacity]="1 - scrollPercent * 4">
+      <h1 class="title">AETHERA</h1>
+      <p class="subtitle">Discover Learning in Motion</p>
+      <div class="buttons">
+        <button class="btn primary" (click)="redirect('/browse')">Explore Games</button>
+        <button class="btn secondary" (click)="redirect('auth')">Get Started</button>
+      </div>
     </div>
+  </section>
+
+  <!-- Feature Section 1 -->
+  <section class="scroll-section">
+    <div class="content-wrapper side-content" 
+         [style.opacity]="scrollPercent > 0.2 && scrollPercent < 0.5 ? 1 : 0"
+         [style.transform]="'translateX(' + (scrollPercent > 0.2 ? '0' : '-50px') + ')'">
+      <div class="feature-card">
+        <i class="fas fa-cubes"></i>
+        <h2>Interactive 3D</h2>
+        <p>Experience education through high-fidelity simulations that react to your touch.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature Section 2 -->
+  <section class="scroll-section">
+    <div class="content-wrapper side-content right" 
+         [style.opacity]="scrollPercent > 0.5 && scrollPercent < 0.8 ? 1 : 0"
+         [style.transform]="'translateX(' + (scrollPercent > 0.5 ? '0' : '50px') + ')'">
+      <div class="feature-card">
+        <i class="fas fa-brain"></i>
+        <h2>Adaptive Learning</h2>
+        <p>Content that evolves with your progress, ensuring the perfect level of challenge.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final Section -->
+  <section class="scroll-section">
+    <div class="content-wrapper" [style.opacity]="scrollPercent > 0.8 ? 1 : 0">
+      <h2 class="title-small">Ready to begin?</h2>
+      <div class="buttons">
+        <button class="btn primary" (click)="redirect('/browse')">Start Journey</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="scroll-indicator" [style.opacity]="scrollPercent < 0.1 ? 1 : 0">
+    <span>SCROLL TO EXPLORE</span>
+    <div class="mouse"></div>
   </div>
 </div>
