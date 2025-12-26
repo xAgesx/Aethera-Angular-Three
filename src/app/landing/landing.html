@@ -18,10 +18,23 @@
     <div class="content-wrapper side-content" 
          [style.opacity]="scrollPercent > 0.2 && scrollPercent < 0.5 ? 1 : 0"
          [style.transform]="'translateX(' + (scrollPercent > 0.2 ? '0' : '-50px') + ')'">
-      <div class="feature-card">
-        <i class="fas fa-cubes"></i>
-        <h2>Interactive 3D</h2>
-        <p>Experience education through high-fidelity simulations that react to your touch.</p>
+      <div class="feature-card mega-card">
+        <div class="model-container">
+          <svg class="complex-svg" viewBox="0 0 400 400">
+            <g class="orbit-group">
+              <circle cx="200" cy="200" r="140" fill="none" stroke="#00ffa3" stroke-width="1" stroke-dasharray="10 5" />
+              <circle cx="200" cy="200" r="100" fill="none" stroke="#fff" stroke-width="0.5" opacity="0.3" />
+              <circle cx="340" cy="200" r="6" fill="#00ffa3" class="node-pulse" />
+              <circle cx="60" cy="200" r="6" fill="#00ffa3" class="node-pulse" style="animation-delay: -1.5s" />
+            </g>
+            <rect x="140" y="140" width="120" height="120" fill="none" stroke="#00ffa3" stroke-width="2" class="spinning-box" />
+            <rect x="165" y="165" width="70" height="70" fill="none" stroke="#fff" stroke-width="1" class="spinning-box-alt" />
+          </svg>
+        </div>
+        <div class="card-text">
+          <h2>Interactive 3D</h2>
+          <p>Experience education through high-fidelity simulations that react to your touch. Our models bridge the gap between abstract concepts and physical intuition.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -31,10 +44,25 @@
     <div class="content-wrapper side-content right" 
          [style.opacity]="scrollPercent > 0.5 && scrollPercent < 0.8 ? 1 : 0"
          [style.transform]="'translateX(' + (scrollPercent > 0.5 ? '0' : '50px') + ')'">
-      <div class="feature-card">
-        <i class="fas fa-brain"></i>
-        <h2>Adaptive Learning</h2>
-        <p>Content that evolves with your progress, ensuring the perfect level of challenge.</p>
+      <div class="feature-card mega-card">
+        <div class="model-container">
+          <svg class="complex-svg" viewBox="0 0 400 400">
+            <g class="network-group">
+              <path d="M200,60 L340,200 L200,340 L60,200 Z" fill="none" stroke="#00ffa3" stroke-width="1" stroke-dasharray="5 5" />
+              <g class="node-group">
+                <circle cx="200" cy="60" r="8" fill="#fff" class="node-pulse" />
+                <circle cx="340" cy="200" r="8" fill="#00ffa3" class="node-pulse" style="animation-delay: -0.5s" />
+                <circle cx="200" cy="340" r="8" fill="#00ffa3" class="node-pulse" style="animation-delay: -1s" />
+                <circle cx="60" cy="200" r="8" fill="#00ffa3" class="node-pulse" style="animation-delay: -1.5s" />
+              </g>
+              <rect x="160" y="160" width="80" height="80" transform="rotate(45 200 200)" fill="none" stroke="#fff" stroke-width="2" class="spinning-box" />
+            </g>
+          </svg>
+        </div>
+        <div class="card-text">
+          <h2>Adaptive Learning</h2>
+          <p>Content that evolves with your progress. Our system mirrors your unique learning style in real-time to ensure the perfect level of challenge.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -43,14 +71,12 @@
   <section class="scroll-section">
     <div class="content-wrapper" [style.opacity]="scrollPercent > 0.8 ? 1 : 0">
       <h2 class="title-small">Ready to begin?</h2>
-      <div class="buttons">
-        <button class="btn primary" (click)="redirect('/browse')">Start Journey</button>
-      </div>
+      <button class="btn primary" (click)="redirect('auth')">Get Started Now</button>
     </div>
   </section>
 
-  <div class="scroll-indicator" [style.opacity]="scrollPercent < 0.1 ? 1 : 0">
-    <span>SCROLL TO EXPLORE</span>
+  <div class="scroll-indicator" [style.opacity]="1 - scrollPercent * 2">
+    <span>SCROLL</span>
     <div class="mouse"></div>
   </div>
 </div>
