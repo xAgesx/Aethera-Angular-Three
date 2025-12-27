@@ -23,6 +23,10 @@ connectedUser: User | null = null;
 tempAvatarPreview = signal<string | null>(null);
 
   constructor(private firestore : Firestore){
+    this.getUserInfo();
+    
+  }
+  getUserInfo(){
     let sessionsEmail = sessionStorage.getItem('email');
     if(sessionsEmail){
       this.getUserByEmail(sessionsEmail).subscribe(data => {
@@ -34,9 +38,7 @@ tempAvatarPreview = signal<string | null>(null);
     console.log('constructor');
     this.connectedUser = {username : 'null1',email: 'null',password:'null',bio:'null',role:'null'};
     }
-    
   }
-
   addUser(user: User) {
     const col = collection(this.firestore, this.collectionName);
     return addDoc(col, user);

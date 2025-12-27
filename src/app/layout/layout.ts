@@ -29,6 +29,7 @@ export class Layout {
 
     this.loggedEmail = sessionStorage.getItem('email') ?? undefined;
     this.getUsername();
+    this.firebaseService.getUserInfo();
   }
 
   toggleProfileDropdown() {
@@ -37,6 +38,7 @@ export class Layout {
   logout(){
     sessionStorage.clear();
     this.redirect("/landing");
+    this.firebaseService.tempAvatarPreview.set(null);
   }
   redirect(path: string) {
     this.mainService.redirect(path);
