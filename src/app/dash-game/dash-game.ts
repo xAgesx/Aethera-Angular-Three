@@ -7,7 +7,7 @@ import * as THREE from 'three';
   standalone: true,
   templateUrl: './dash-game.html',
   styleUrls: ['./dash-game.css'],
-  imports:[CommonModule]
+  imports: [CommonModule]
 })
 export class VoidDash implements AfterViewInit, OnDestroy {
   @ViewChild('gameCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -17,14 +17,14 @@ export class VoidDash implements AfterViewInit, OnDestroy {
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private animationId!: number;
-  
+
   // Game Objects
   private player!: THREE.Mesh;
   private obstacles: THREE.Mesh[] = [];
   private stars!: THREE.Points;
-  private text !:THREE.Mesh; 
+  private text !: THREE.Mesh;
 
- 
+
   // State
   public score = 0;
   public scoreInKm = 0;
@@ -32,14 +32,16 @@ export class VoidDash implements AfterViewInit, OnDestroy {
   private playerPos = 0;
   private targetPlayerPos = 0;
   private speed = 0.5;
+  private isPause = false;
 
 
   @HostListener('window:keydown', ['$event'])
   handleInpu(event: KeyboardEvent) {
-    console.log('A key was pressed',event.key);
+    console.log('A key was pressed', event.key);
     if (this.gameOver) return;
     if (event.key === 'ArrowLeft' || event.key === 'a') this.targetPlayerPos = -4;
     if (event.key === 'ArrowRight' || event.key === 'd') this.targetPlayerPos = 4;
+    if (event.key === 'Escape') this.isPause = !this.isPause;
   }
 
   @HostListener('window:keyup')
@@ -77,8 +79,8 @@ export class VoidDash implements AfterViewInit, OnDestroy {
     // Background Stars
     const starGeom = new THREE.BufferGeometry();
     const starCoords = [];
-    for(let i=0; i<1000; i++) {
-        starCoords.push((Math.random()-0.5)*100, (Math.random()-0.5)*100, -Math.random()*100);
+    for (let i = 0; i < 1000; i++) {
+      starCoords.push((Math.random() - 0.5) * 100, (Math.random() - 0.5) * 100, -Math.random() * 100);
     }
     starGeom.setAttribute('position', new THREE.Float32BufferAttribute(starCoords, 3));
     this.stars = new THREE.Points(starGeom, new THREE.PointsMaterial({ color: 0xffffff, size: 0.1 }));
@@ -91,12 +93,13 @@ export class VoidDash implements AfterViewInit, OnDestroy {
     const geom = new THREE.BoxGeometry(2, 2, 2);
     const mat = new THREE.MeshBasicMaterial({ color: 0x00ffa3, wireframe: true });
     const cube = new THREE.Mesh(geom, mat);
-    cube.position.set(Math.random() > 0.5 ? 4 : Math.random()>0.5 ? 0 : -4, 0, -50);
+    cube.position.set(Math.random() > 0.5 ? 4 : Math.random() > 0.5 ? 0 : -4, 0, -50);
     this.scene.add(cube);
     this.obstacles.push(cube);
   }
 
   private animate = () => {
+    if (this.isPause) return;
     if (this.gameOver) return;
     this.animationId = requestAnimationFrame(this.animate);
 
@@ -110,7 +113,7 @@ export class VoidDash implements AfterViewInit, OnDestroy {
 
     if (Math.random() < 0.01) this.spawnObstacle();
 
-    // Update obstacles
+    // Update obstacles , the player doesn't move
     for (let i = this.obstacles.length - 1; i >= 0; i--) {
       const obj = this.obstacles[i];
       obj.position.z += this.speed;
@@ -118,7 +121,7 @@ export class VoidDash implements AfterViewInit, OnDestroy {
       // Collision Detection
       const dist = this.player.position.distanceTo(obj.position);
       if (dist < 1.5) {
-         this.gameOver = true;
+        this.gameOver = true;
       }
 
       // Cleanup

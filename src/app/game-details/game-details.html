@@ -53,7 +53,7 @@
       <button class="like-btn" [class.liked]="game.liked" (click)="toggleLike()">
         <i class="fas fa-heart"></i> {{ game.liked ? 'Liked' : 'Like' }}
       </button>
-      <button class="launch-button">
+      <button class="launch-button" (click)="loadGame()">
         <i class="fas fa-play"></i> Play Now
       </button>
     </div>

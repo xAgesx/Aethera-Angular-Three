@@ -141,4 +141,9 @@ export class GameDetails implements OnInit {
 
     }
   }
+  loadGame(){
+    if(this.game?.id == 3){
+      this.router.navigate(['/dashGame']);
+    }
+  }
 }
