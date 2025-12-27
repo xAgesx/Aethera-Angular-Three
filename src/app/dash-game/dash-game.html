@@ -1,0 +1,14 @@
+<div class="game-viewport">
+      <canvas #gameCanvas></canvas>
+      
+      <div class="hud" >
+        <div class="score">DISTANCE: {{ scoreInKm }}m</div>
+        <div class="controls-hint">USE ARROW KEYS OR A/D</div>
+      </div>
+      
+      <div class="overlay" *ngIf="gameOver">
+        <h1>CRITICAL COLLISION</h1>
+        <p>FINAL DISTANCE: {{ scoreInKm }}m</p>
+        <button (click)="restart()">REBOOT SYSTEM</button>
+      </div>
+    </div>
