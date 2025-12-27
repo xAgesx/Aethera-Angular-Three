@@ -1,29 +1,27 @@
 <!-- Notification Popup -->
 
 <div class="notification-container" *ngIf="mainService.notification().type"
-  [class.show]="mainService.notification().type">
-  <div class="notification-popup" [ngClass]="mainService.notification().type">
-    <div class="notification-icon">
-      <svg *ngIf="mainService.notification().type === 'success'" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="2">
-        <polyline points="20 6 9 17 4 12"></polyline>
-      </svg>
-      <svg *ngIf="mainService.notification().type === 'error'" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="2">
-        <circle cx="12" cy="12" r="10"></circle>
-        <line x1="15" y1="9" x2="9" y2="15"></line>
-        <line x1="9" y1="9" x2="15" y2="15"></line>
-      </svg>
+    [class.show]="mainService.notification().type">
+    <div class="notification-popup" [ngClass]="mainService.notification().type">
+        <div class="notification-icon">
+            <svg *ngIf="mainService.notification().type === 'success'" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <svg *ngIf="mainService.notification().type === 'error'" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+        </div>
+        <div class="notification-content">
+            <p class="notification-message">{{ mainService.notification().message }}</p>
+        </div>
+        <button class="notification-close">&times;</button>
+        <div class="notification-progress"></div>
     </div>
-    <div class="notification-content">
-      <p class="notification-message">{{ mainService.notification().message }}</p>
-    </div>
-    <button class="notification-close"
-      (click)="mainService.notification.set({message: '', type: null})">&times;</button>
-    <div class="notification-progress"></div>
-  </div>
 </div>
-
 
 
 

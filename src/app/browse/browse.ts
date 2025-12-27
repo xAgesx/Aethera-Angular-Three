@@ -28,6 +28,7 @@ export class Browse implements OnInit {
   }
 
   ngOnInit() {
+    if(!sessionStorage.getItem('email')) this.router.navigate((['auth']));
     setTimeout(() => {
       this.games = this.gameService.getAllGames();
 
