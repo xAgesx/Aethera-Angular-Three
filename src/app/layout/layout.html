@@ -3,7 +3,7 @@
   <!-- Sidebar -->
   <aside [class.collapsed]="isCollapsed" class="sidebar">
     <div class="logo">
-      <img src="assets/aethera-logo.png" alt="Aethera Logo" />
+      <img src="assets/aethera-logo.png" alt="Aethera Logo" style="border-radius: 50%;"/>
       <span *ngIf="!isCollapsed" class="logo-text" (click)="redirect('/landing')">Aethera</span>
     </div>
 
@@ -68,8 +68,8 @@
       <h1>Aethera Platform</h1>
       <div class="top-actions">
         <input type="text" placeholder="Search..." />
-        <button><i class="fas fa-bell"></i></button>
-        <button><i class="fas fa-sign-out-alt"></i></button>
+        <button (click)="redirect('dashboard');"><i class="fas fa-bell"></i></button>
+        <button (click)="logout();"><i class="fas fa-sign-out-alt"></i></button>
       </div>
     </header>
 
