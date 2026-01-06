@@ -28,6 +28,7 @@ export class Layout {
   ngOnInit() {
 
     this.loggedEmail = sessionStorage.getItem('email') ?? undefined;
+    if(this.loggedEmail == undefined ) this.redirect("landing");
     this.getUsername();
     this.firebaseService.getUserInfo();
   }
