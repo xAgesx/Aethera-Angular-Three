@@ -3,7 +3,7 @@ Check the website live at : xagesxaethera.vercel.app
 
 This is my first project built with Angular, designed to explore the integration of Three.js within a modern web framework. It functions as an interactive landing page and dashboard that hosts a series of WebGL games, while managing standard CRUD operations and security via Firebase and Google APIs.
 
-##🛠 Technical Deep Dive
+## 🛠 Technical Deep Dive
 1. Angular & Component Architecture
 
   The Learning Curve: As my first Angular project, I focused on mastering the component lifecycle, especially for initializing and disposing of Three.js scenes to prevent memory leaks.
