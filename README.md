@@ -1,7 +1,7 @@
 # Aethera
-Check the website live at : https://xagesxaethera-5k1ad4kdh-testing-s-projects-449b3f0a.vercel.app/landing
+Check the website live at : xagesxaethera.vercel.app
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.3.
+This is my first project built with Angular, designed to explore the integration of Three.js within a modern web framework. It functions as an interactive landing page and dashboard that hosts a series of WebGL games, while managing standard CRUD operations and security via Firebase and Google APIs.
 
 ## Development server
 
