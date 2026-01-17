@@ -5,7 +5,25 @@ This is my first project built with Angular, designed to explore the integration
 ## Visual Showcase
 You Can Check The App Live At : **xagesxaethera.vercel.app**
 If unable to, here are a few screenshots for virtual showcase :
-![Uploading image.png…]()
+<table style="width:100%; border:0;">
+  <tr>
+    <td align="center">
+      <img src="Assets/images/screenshot-landing.png" alt="Gameplay Screenshot" width="250">
+      <br>
+      <p>Slicing candies mid-air with particles flying.</p>
+    </td>
+    <td align="center">
+      <img src="Assets/images/screenshot-gameover.png" alt="Game Over Screen" width="250">
+      <br>
+      <p>Keep Playing display with retry prompt.</p>
+    </td>
+    <td align="center">
+      <img src="Assets/images/pause-screenshot.png" alt="Pause Game" width="250">
+      <br>
+      <p>Pause Game with one Click.</p>
+    </td>
+  </tr>
+</table>
 
 ## Technical Deep Dive
 1. Angular & Component Architecture
