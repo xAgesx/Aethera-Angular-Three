@@ -2,8 +2,12 @@
 Check the website live at : xagesxaethera.vercel.app
 
 This is my first project built with Angular, designed to explore the integration of Three.js within a modern web framework. It functions as an interactive landing page and dashboard that hosts a series of WebGL games, while managing standard CRUD operations and security via Firebase and Google APIs.
+## Visual Showcase
+You Can Check The App Live At : **xagesxaethera.vercel.app**
+If unable to, here are a few screenshots for virtual showcase :
+![Uploading image.png…]()
 
-## 🛠 Technical Deep Dive
+## Technical Deep Dive
 1. Angular & Component Architecture
 
   The Learning Curve: As my first Angular project, I focused on mastering the component lifecycle, especially for initializing and disposing of Three.js scenes to prevent memory leaks.
@@ -28,7 +32,7 @@ This is my first project built with Angular, designed to explore the integration
   
   Bot Protection: Implemented Google reCAPTCHA v2 on the authentication and contact forms to mitigate automated spam.
 
-##📦 Tech Stack
+## Tech Stack
 
 Frontend: Angular (v17+), TypeScript
 
@@ -39,6 +43,8 @@ Styles: Tailwind CSS
 Backend-as-a-Service: Firebase (Authentication, Firestore)
 
 Third-Party APIs: Google reCAPTCHA v2
+
+
 
 ## Development server
 
