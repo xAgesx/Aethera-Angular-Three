@@ -10,12 +10,12 @@ If unable to, here are a few screenshots for virtual showcase :
 <table style="width:100%; border:0;">
   <tr>
     <td align="center">
-      <img src="auth-screenshot.png" alt="login page" width="250">
+      <img src="auth-screenshot.png" alt="login page" width="250" height="350">
       <br>
       <p>want to join us ? well proceed with a secure authentification !</p>
     </td>
     <td align="center">
-      <img src="browse-screenshot.png" alt="browse Games" width="250">
+      <img src="browse-screenshot.png" alt="browse Games" width="250" height="350">
       <br>
       <p>This is the List of games we have !</p>
     </td>
