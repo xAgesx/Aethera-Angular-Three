@@ -1,4 +1,4 @@
-# Aethera
+<img width="1132" height="727" alt="image" src="https://github.com/user-attachments/assets/c4b9e84c-8707-491c-89a4-1406c9f312c0" /># Aethera
 Check the website live at : [xagesxaethera.vercel.app](https://xagesxaethera-5k1ad4kdh-testing-s-projects-449b3f0a.vercel.app)
 
 This is my first project built with Angular, designed to explore the integration of Three.js within a modern web framework. It functions as an interactive landing page and dashboard that hosts a series of WebGL games, while managing standard CRUD operations and security via Firebase and Google APIs.
@@ -8,19 +8,39 @@ If unable to, here are a few screenshots for virtual showcase :
 <table style="width:100%; border:0;">
   <tr>
     <td align="center">
-      <img src="Assets/images/screenshot-landing.png" alt="Gameplay Screenshot" width="250">
+      <img src="landing-screenshot.png" alt="LandingPage Screenshot" width="250">
       <br>
-      <p>Slicing candies mid-air with particles flying.</p>
+      <p>This is the landing page.</p>
     </td>
     <td align="center">
-      <img src="Assets/images/screenshot-gameover.png" alt="Game Over Screen" width="250">
+      <img src="auth-screenshot.png" alt="login page" width="250">
       <br>
-      <p>Keep Playing display with retry prompt.</p>
+      <p>want to join us ? well proceed with a secure authentification !</p>
     </td>
     <td align="center">
-      <img src="Assets/images/pause-screenshot.png" alt="Pause Game" width="250">
+      <img src=browse-screenshot.png" alt="browse Games" width="250">
       <br>
-      <p>Pause Game with one Click.</p>
+      <p>This is the List of games we have !</p>
+    </td>
+    <td align="center">
+      <img src=dashboard-screenshot.png" alt="Dashboard" width="250">
+      <br>
+      <p>Manage all your liked games and have a look at your preferences</p>
+    </td>
+    <td align="center">
+      <img src=reviews-screenshot.png" alt="reviews" width="250">
+      <br>
+      <p>the simple reviews system for games</p>
+    </td>
+    <td align="center">
+      <img src=gameDetails-screenshot.png" alt="game details" width="250">
+      <br>
+      <p>curious about a particular game ? well all the info you need is here !</p>
+    </td>
+    <td align="center">
+      <img src=VoidDash-screenshot.png" alt="void dash" width="250">
+      <br>
+      <p>one of the games we made with Three js</p>
     </td>
   </tr>
 </table>
