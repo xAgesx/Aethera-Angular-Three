@@ -3,8 +3,9 @@ Check the website live at : [xagesxaethera.vercel.app](https://xagesxaethera-5k1
 
 This is my first project built with Angular, designed to explore the integration of Three.js within a modern web framework. It functions as an interactive landing page and dashboard that hosts a series of WebGL games, while managing standard CRUD operations and security via Firebase and Google APIs.
 ## Visual Showcase
-You Can Check The App Live At : **xagesxaethera.vercel.app**
+You Can Check The App Live At : **xagesxaethera.vercel.app**<br>
 If unable to, here are a few screenshots for virtual showcase :
+<br>
 <img width="900" height="600" alt="image" src="landing-screenshot.png" />
 <table style="width:100%; border:0;">
   <tr>
@@ -14,27 +15,27 @@ If unable to, here are a few screenshots for virtual showcase :
       <p>want to join us ? well proceed with a secure authentification !</p>
     </td>
     <td align="center">
-      <img src=browse-screenshot.png" alt="browse Games" width="250">
+      <img src="browse-screenshot.png" alt="browse Games" width="250">
       <br>
       <p>This is the List of games we have !</p>
     </td>
     <td align="center">
-      <img src=dashboard-screenshot.png" alt="Dashboard" width="250">
+      <img src="dashboard-screenshot.png" alt="Dashboard" width="250">
       <br>
       <p>Manage all your liked games and have a look at your preferences</p>
     </td>
     <td align="center">
-      <img src=reviews-screenshot.png" alt="reviews" width="250">
+      <img src="reviews-screenshot.png" alt="reviews" width="250">
       <br>
       <p>the simple reviews system for games</p>
     </td>
     <td align="center">
-      <img src=gameDetails-screenshot.png" alt="game details" width="250">
+      <img src="gameDetails-screenshot.png" alt="game details" width="250">
       <br>
       <p>curious about a particular game ? well all the info you need is here !</p>
     </td>
     <td align="center">
-      <img src=VoidDash-screenshot.png" alt="void dash" width="250">
+      <img src="VoidDash-screenshot.png" alt="void dash" width="250">
       <br>
       <p>one of the games we made with Three js</p>
     </td>
