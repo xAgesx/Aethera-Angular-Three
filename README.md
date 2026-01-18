@@ -1,4 +1,4 @@
-<img width="1132" height="727" alt="image" src="landing-screenshot" /># Aethera
+<img width="1132" height="727" alt="image" src="landing-screenshot.png" /># Aethera
 Check the website live at : [xagesxaethera.vercel.app](https://xagesxaethera-5k1ad4kdh-testing-s-projects-449b3f0a.vercel.app)
 
 This is my first project built with Angular, designed to explore the integration of Three.js within a modern web framework. It functions as an interactive landing page and dashboard that hosts a series of WebGL games, while managing standard CRUD operations and security via Firebase and Google APIs.
